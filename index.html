@@ -52,9 +52,7 @@ body.m-b .digit{display:inline-block;animation:charblur .5s cubic-bezier(.2,.8,.
 @keyframes ring{from{transform:translate(-50%,-50%) scale(0);opacity:.55}to{transform:translate(-50%,-50%) scale(1);opacity:0}}
 @keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 body.m-c .screen.on{animation:wipe .5s cubic-bezier(.65,0,.35,1)}
-.sp path{transform-origin:50% 50%;transform-box:fill-box}
-.sp.live path{animation:breathe 3.6s ease-in-out infinite;animation-delay:calc(var(--i,0)*-120ms)}
-body.m-c .sp.live path{animation-duration:3.2s}
+.sp.live path{stroke-dasharray:none!important;animation:none!important}
 body.m-c .chars span{animation:charwave 1.1s ease both;animation-delay:calc(var(--i)*40ms)}
 @keyframes charwave{0%{opacity:0;transform:translateY(.6em)}60%{opacity:1;transform:translateY(-.12em)}100%{transform:none}}
 body.m-c .stg{animation:fade .5s ease both;animation-delay:calc(var(--i)*70ms + 300ms)}
@@ -212,6 +210,20 @@ p.sub{color:var(--muted);margin:0 0 18px}
 .stats div{background:#0a0a0a;border:1px solid #1f1f1f;border-radius:12px;padding:10px}
 .stats b{display:block;font-size:18px}
 .stats span{font-size:11px;color:var(--muted)}
+/* карточка Music DNA: симметрия, центр, минимум */
+#dnaCard{text-align:center;padding:22px 18px 22px}
+#dnaCard .brand{justify-content:center}
+#dnaCard svg.sp{margin:18px -18px 14px;width:calc(100% + 36px);-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+#dnaCard .who{font-size:13px;color:var(--muted);margin-bottom:2px}
+#dnaCard .arch{font-size:21px;margin:2px 0 14px}
+#dnaCard .tags{justify-content:center}
+#dnaCard .tags span{border-color:#2a2a2a}
+#dnaCard .covrow{justify-content:center;gap:8px;margin-top:18px}
+#dnaCard .covrow .cov{flex:0 0 calc((100% - 32px)/5);max-width:none;border-radius:6px}
+#dnaCard .stats2{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px;padding-top:16px;border-top:1px solid #1d1d1d}
+#dnaCard .stats2 div+div{border-left:1px solid #1d1d1d}
+#dnaCard .stats2 b{display:block;font-size:18px;font-weight:700}
+#dnaCard .stats2 span{font-size:11px;color:var(--muted)}
 .tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);border-top:1px solid #1a1a1a;padding:8px 10px calc(8px + var(--safe-b));z-index:6;display:none}
 .tabs.on{display:block}
 .tabs .inner{max-width:520px;margin:0 auto;display:flex}
@@ -614,20 +626,46 @@ function dna(){
   const tags=[...m.map(x=>x[2]),...g.map(x=>x[2])];
   return {arch,tags,era:topD!=null?DECADE_LABEL[topD]:'—',avg,count:S.albums.length};
 }
-function soundprint(seedStr,W_=320,H=170){
+function spModel(seedStr){
   const r=rng(fnv(seedStr));const n=3+Math.floor(r()*2);const bumps=[];
-  for(let k=0;k<n;k++)bumps.push({c:.18+r()*.64,w:.05+r()*.09,a:(k===0?.75+r()*.25:(r()*1.6-.8)*(k===1?1:.7)),s:r()*2-1});
+  for(let k=0;k<n;k++)bumps.push({c:.18+r()*.64,w:.05+r()*.09,a:(k===0?.75+r()*.25:(r()*1.6-.8)*(k===1?1:.7)),s:r()*2-1,ph:r()*6.283});
   if(Math.abs(bumps[1].a)<.4)bumps[1].a=-.6; // всегда есть "противофаза", как в логотипе
-  const L=30,lines=[];let lo=1e9,hi=-1e9;
-  for(let i=0;i<L;i++){const t=i/(L-1);const pts=[];
-    for(let j=0;j<=90;j++){const x=j/90;let y=0;
-      bumps.forEach(b=>{const c=b.c+(t-.5)*.16*b.s;const w=b.w*(.85+.3*t);y+=b.a*(.35+.65*t)*Math.exp(-((x-c)**2)/(2*w*w))});
-      const py=-y*H*.45+(t-.5)*10;pts.push([x*W_,py]);lo=Math.min(lo,py);hi=Math.max(hi,py)}
-    lines.push([t,pts])}
-  const pad=6,vh=hi-lo+pad*2;
-  const paths=lines.map(([t,pts])=>`<path d="${pts.map((p,j)=>(j?'L':'M')+p[0].toFixed(1)+' '+(p[1]-lo+pad).toFixed(1)).join('')}" fill="none" stroke="#fff" stroke-width=".7" stroke-opacity="${(.1+.8*t*t).toFixed(2)}"/>`);
-  return `<svg class="sp" viewBox="0 0 ${W_} ${vh.toFixed(0)}">${paths.join('')}</svg>`;
+  return bumps;
 }
+// T — время в секундах: волна медленно плывёт (дрейф горбов, дыхание амплитуды, бегущая рябь)
+function spLines(bumps,W_,H,T,L=30,N=90){
+  const lines=[];
+  for(let i=0;i<L;i++){const t=i/(L-1);const pts=[];
+    for(let j=0;j<=N;j++){const x=j/N;let y=0;
+      bumps.forEach(b=>{const c=b.c+(t-.5)*.16*b.s+.045*Math.sin(T*.21+b.ph);const w=b.w*(.85+.3*t)*(1+.08*Math.sin(T*.17+b.ph*1.7));
+        y+=b.a*(.35+.65*t)*(1+.16*Math.sin(T*.33+b.ph))*Math.exp(-((x-c)**2)/(2*w*w))});
+      y+=.05*(.25+.75*t)*Math.sin(x*8.5-T*.7+t*1.6)*Math.sin(Math.PI*x);
+      pts.push([x*W_,-y*H*.45+(t-.5)*10])}
+    lines.push([t,pts])}
+  return lines;
+}
+function spFrame(bumps,W_,H){ // фиксированная рамка с запасом под движение, волна по центру
+  const ls=spLines(bumps,W_,H,0);let lo=1e9,hi=-1e9;ls.forEach(([t,p])=>p.forEach(q=>{lo=Math.min(lo,q[1]);hi=Math.max(hi,q[1])}));
+  const half=Math.max(Math.abs(lo),Math.abs(hi))*1.22+6;return {half,vh:Math.round(half*2)};
+}
+function spD(pts,half){return pts.map((p,j)=>(j?'L':'M')+p[0].toFixed(1)+' '+(p[1]+half).toFixed(1)).join('')}
+function soundprint(seedStr,W_=320,H=170){
+  const bumps=spModel(seedStr),{half,vh}=spFrame(bumps,W_,H);
+  const paths=spLines(bumps,W_,H,0).map(([t,pts])=>`<path d="${spD(pts,half)}" fill="none" stroke="#fff" stroke-width=".7" stroke-opacity="${(.1+.8*t*t).toFixed(2)}"/>`);
+  return `<svg class="sp" viewBox="0 0 ${W_} ${vh}" data-seed="${esc(seedStr)}" data-w="${W_}" data-h="${H}" data-half="${half.toFixed(2)}">${paths.join('')}</svg>`;
+}
+// Живая волна: перерисовка ~24 кадра/с, только пока карточка на экране
+let LIVE=null;
+function startLiveWave(svg){
+  if(!svg)return;stopLiveWave();
+  const bumps=spModel(svg.dataset.seed),W_=+svg.dataset.w,H=+svg.dataset.h,half=+svg.dataset.half,paths=[...svg.querySelectorAll('path')];
+  const t0=performance.now();let last=0;
+  const f=now=>{if(!LIVE||LIVE.svg!==svg)return;LIVE.raf=requestAnimationFrame(f);
+    if(document.hidden||!svg.isConnected||cur!=='wave'||now-last<41)return;last=now;
+    const ls=spLines(bumps,W_,H,(now-t0)/1000);ls.forEach(([t,pts],i)=>{if(paths[i])paths[i].setAttribute('d',spD(pts,half))})};
+  LIVE={svg,raf:requestAnimationFrame(f)};
+}
+function stopLiveWave(){if(LIVE){cancelAnimationFrame(LIVE.raf);LIVE=null}}
 
 /* ============ NAV ============ */
 let cur='welcome', stack=[];
@@ -699,13 +737,13 @@ function render(id){
   }
   if(id==='wave'){
     const d=dna();
-    $('#dnaCard').innerHTML=`<div class="brand display"><span>SAME WAVE</span><span>MUSIC DNA</span></div>
+    $('#dnaCard').innerHTML=`<div class="brand display"><span>MUSIC DNA</span></div>
       ${soundprint(encodeProfile(S))}
-      <div class="who stg" style="--i:0">${esc(S.name||'Слушатель')} · твой архетип</div>
+      <div class="who stg" style="--i:0">${esc(S.name||'Слушатель')}</div>
       <div class="arch display chars">${splitChars(d.arch)}</div>
       <div class="tags stg" style="--i:2">${d.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
       <div class="covrow stg" style="--i:3">${S.albums.slice().sort((x,y)=>(y.r||0)-(x.r||0)).slice(0,5).map(covBox).join('')}</div>
-      <div class="stats stg" style="--i:4"><div><b>${d.count}</b><span>альбомов</span></div><div><b>${d.era}</b><span>главная эпоха</span></div><div><b>${d.avg}</b><span>средняя оценка</span></div></div>`;
+      <div class="stats2 stg" style="--i:4"><div><b>${d.count}</b><span>альбомов</span></div><div><b>${d.era}</b><span>главная эпоха</span></div><div><b>${d.avg}</b><span>средняя оценка</span></div></div>`;
   }
   if(id==='match'){$('#myCode').textContent=encodeProfile(S)}
   if(id==='wave'){hydrateCovers($('#dnaCard'));renderRateCta()}
@@ -904,22 +942,28 @@ async function buildStory(kind){
   ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
   let g=ctx.createRadialGradient(540,520,40,540,520,900);g.addColorStop(0,'#1d1d1d');g.addColorStop(1,'#000');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   const D='Michroma, Arial, sans-serif',M='Manrope, Arial, sans-serif';
-  ctx.fillStyle='#8a8a8a';ctx.font=`26px ${D}`;spaced(ctx,'SAME WAVE',80,150,10);spaced(ctx,kind==='match'?'MATCH':'MUSIC DNA',1000,150,10,'right');
+  ctx.fillStyle='#8a8a8a';ctx.font=`26px ${D}`;if(kind==='dna'){spaced(ctx,'SAME WAVE',540,150,12,'center')}else{spaced(ctx,'SAME WAVE',80,150,10);spaced(ctx,'MATCH',1000,150,10,'right')}
   ctx.textAlign='left';
   if(kind==='dna'){
     const d=dna(),code=encodeProfile(S);
-    const sp=soundprint(code,920,420).replace(/stroke-width="\.?\d*\.?\d+"/g,'stroke-width="1.6"');
-    const im=await svgImg(sp,920,Math.round(920*(+sp.match(/viewBox="0 0 \d+ (\d+)"/)[1])/920));if(im)ctx.drawImage(im,80,250,920,im.height);
-    let y=820;
-    ctx.fillStyle='#8a8a8a';ctx.font=`600 38px ${M}`;ctx.fillText((S.name||'Слушатель')+' · мой архетип',80,y);
-    y+=110;ctx.fillStyle='#f2f2f2';fitFont(ctx,d.arch,920,84,D);ctx.fillText(d.arch,80,y);
-    y+=70;ctx.font=`600 32px ${M}`;let x=80;
-    for(const t of d.tags){const w=ctx.measureText(t).width+48;if(x+w>1000){x=80;y+=78}ctx.strokeStyle='#444';ctx.lineWidth=2;rr(ctx,x,y,w,60,30);ctx.stroke();ctx.fillStyle='#c9c9c9';ctx.fillText(t,x+24,y+41);x+=w+14}
-    y+=110;
+    const sp=soundprint(code,1000,440).replace(/stroke-width="\.?\d*\.?\d+"/g,'stroke-width="1.5"');
+    const vh=+sp.match(/viewBox="0 0 \d+ (\d+)"/)[1];const im=await svgImg(sp,1080,Math.round(1080*vh/1000));
+    if(im){const oc=document.createElement('canvas');oc.width=1080;oc.height=im.height;const o=oc.getContext('2d');o.drawImage(im,0,0);
+      o.globalCompositeOperation='destination-in';const fg=o.createLinearGradient(0,0,1080,0);fg.addColorStop(0,'rgba(0,0,0,0)');fg.addColorStop(.14,'#000');fg.addColorStop(.86,'#000');fg.addColorStop(1,'rgba(0,0,0,0)');o.fillStyle=fg;o.fillRect(0,0,1080,im.height);
+      ctx.drawImage(oc,0,560-im.height/2)}
+    ctx.textAlign='center';let y=890;
+    ctx.fillStyle='#8a8a8a';ctx.font=`600 38px ${M}`;ctx.fillText(S.name||'Слушатель',540,y);
+    y+=96;ctx.fillStyle='#f2f2f2';fitFont(ctx,d.arch,940,78,D);ctx.fillText(d.arch,540,y);
+    ctx.font=`600 30px ${M}`;const rows=[[]];let rw=0;
+    for(const t of d.tags){const w=ctx.measureText(t).width+44;if(rw+w>940&&rows[rows.length-1].length){rows.push([]);rw=0}rows[rows.length-1].push([t,w]);rw+=w+14}
+    y+=60;ctx.textAlign='left';
+    rows.forEach(r=>{const tot=r.reduce((s,[,w])=>s+w,0)+(r.length-1)*14;let x=540-tot/2;r.forEach(([t,w])=>{ctx.strokeStyle='#2e2e2e';ctx.lineWidth=2;rr(ctx,x,y,w,58,29);ctx.stroke();ctx.fillStyle='#c9c9c9';ctx.fillText(t,x+22,y+39);x+=w+14});y+=74});
+    y+=40;
     const top=S.albums.slice().sort((a,b)=>(b.r||0)-(a.r||0)).slice(0,5);
-    await drawCovers(ctx,top,y,176);y+=176+50;
-    const st=[[d.count,'альбомов'],[d.era,'главная эпоха'],[d.avg,'средняя оценка']];
-    st.forEach(([v,l],i)=>{const bx=80+i*313;ctx.strokeStyle='#262626';ctx.lineWidth=2;rr(ctx,bx,y,293,150,22);ctx.stroke();ctx.fillStyle='#f2f2f2';ctx.font=`800 54px ${M}`;ctx.fillText(String(v),bx+28,y+72);ctx.fillStyle='#8a8a8a';ctx.font=`600 28px ${M}`;ctx.fillText(l,bx+28,y+118)});
+    await drawCovers(ctx,top,y,168);y+=168+70;
+    ctx.fillStyle='#1d1d1d';ctx.fillRect(140,y,800,2);y+=70;
+    const st=[[d.count,'альбомов'],[d.era,'главная эпоха'],[d.avg,'средняя оценка']];ctx.textAlign='center';
+    st.forEach(([v,l],i)=>{const cx=240+i*300;ctx.fillStyle='#f2f2f2';ctx.font=`800 52px ${M}`;ctx.fillText(String(v),cx,y);ctx.fillStyle='#8a8a8a';ctx.font=`600 26px ${M}`;ctx.fillText(l,cx,y+46);if(i)ctx.fillStyle='#1d1d1d',ctx.fillRect(cx-150,y-50,2,110)});
   }else{
     const {fr,c,lbl}=LAST_MATCH;const me=S.name||'Я',other=fr.name||'друг';
     ctx.textAlign='center';ctx.fillStyle='#c9c9c9';ctx.font=`600 44px ${M}`;ctx.fillText(me+' × '+other,540,330);
@@ -1027,7 +1071,7 @@ function splitChars(t){return [...String(t)].map((ch,i)=>`<span style="--i:${i}"
 function prepSP(svg,live){
   if(!svg)return;svg.querySelectorAll('path').forEach((p,i)=>{let L=1200;try{L=Math.ceil(p.getTotalLength())}catch(e){}p.style.setProperty('--len',L);p.style.setProperty('--i',i);p.style.setProperty('--d',i%2?1:-1)});
   svg.classList.remove('draw','live');void svg.getBoundingClientRect();
-  svg.classList.add('draw');clearTimeout(svg._lt);svg._lt=setTimeout(()=>svg.classList.add('live'),S.motion==='e'?2000:1500);
+  svg.classList.add('draw');clearTimeout(svg._lt);svg._lt=setTimeout(()=>{svg.classList.add('live');if(svg.closest('#dnaCard'))startLiveWave(svg)},S.motion==='e'?2000:1500);
 }
 function countUp(el){
   const to=+el.dataset.count;if(isNaN(to))return;
@@ -1041,7 +1085,7 @@ function motionAfter(id){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   if(S.motion==='e'){const lw=$('#linewipe');lw.classList.remove('go');void lw.offsetWidth;lw.classList.add('go')}
   if(id==='wave'&&S.motion==='e')penTip($('#dnaCard svg.sp'));
-  if(id==='wave'&&S.motion==='g')document.querySelectorAll('#dnaCard .stats b').forEach(rollText);
+  if(id==='wave'&&S.motion==='g')document.querySelectorAll('#dnaCard .stats2 b').forEach(rollText);
   if(id==='matchResult'&&S.motion==='g'){const sc=$('#matchResult .score');if(sc&&!sc.querySelector('.hudring'))sc.insertAdjacentHTML('afterbegin',HUDRING)}
   if(id==='wave'){prepSP($('#dnaCard svg.sp'));const c=$('#dnaCard');c.classList.remove('beam');void c.offsetWidth;if(S.motion==='b')c.classList.add('beam')}
   if(id==='matchResult'){document.querySelectorAll('#matchResult [data-count]').forEach(countUp);prepSP(null)}
