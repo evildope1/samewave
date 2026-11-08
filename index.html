@@ -51,6 +51,13 @@ p.sub{color:var(--muted);margin:0 0 18px}
 .alb{display:flex;align-items:center;gap:12px;padding:8px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
 .alb .cov{width:46px;height:46px;border-radius:8px;flex:none;overflow:hidden}
 .alb .cov svg{display:block;width:100%;height:100%}
+.cov{position:relative;background:#111}
+.cov img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s}
+.cov img.ok{opacity:1}
+.covrow{display:flex;gap:6px;margin-top:14px}
+.covrow .cov{flex:1;aspect-ratio:1;border-radius:8px;overflow:hidden;max-width:20%}
+.covrow .cov svg{display:block;width:100%;height:100%}
+.pcard .covrow{margin:0 0 10px}
 .alb .meta{flex:1;min-width:0}
 .alb .t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .alb .a{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -328,6 +335,49 @@ function cover(a){ // сгенерированная обложка, без за
   return `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="rgb(${g},${g},${g})"/>${lines.join('')}<text x="6" y="58" font-size="9" font-family="Manrope" font-weight="800" fill="#fff" fill-opacity=".8">${esc((a.a||'?').slice(0,2).toUpperCase())}</text></svg>`;
 }
 
+
+/* ============ ОБЛОЖКИ (iTunes Search API, с кэшем) ============ */
+const COV_KEY='sw_covers_v1';let COVERS={};try{COVERS=JSON.parse(localStorage.getItem(COV_KEY)||'{}')}catch(e){}
+function covId(a){return h36(norm(a.t)+'|'+norm(a.a),7)}
+const covMeta={};
+function covBox(a){const id=covId(a);covMeta[id]={t:a.t,a:a.a};const u=COVERS[id];
+  return `<div class="cov" data-cov="${id}">${cover(a)}${u&&u!=='-'?`<img src="${esc(u)}" alt="" class="ok" onerror="this.remove()">`:''}</div>`}
+function saveCovers(){try{localStorage.setItem(COV_KEY,JSON.stringify(COVERS))}catch(e){}}
+const covQueue=[];let covActive=0;
+function hydrateCovers(root){
+  (root||document).querySelectorAll('.cov[data-cov]').forEach(el=>{
+    const id=el.dataset.cov;if(el.querySelector('img'))return;
+    const u=COVERS[id];if(u==='-')return;
+    if(u){putImg(el,u);return}
+    if(!covQueue.includes(id))covQueue.push(id);
+  });pumpCovers();
+}
+function putImg(el,u){const img=new Image();img.alt='';img.onload=()=>img.classList.add('ok');img.onerror=()=>img.remove();img.src=u;el.appendChild(img)}
+function pumpCovers(){
+  while(covActive<3&&covQueue.length){const id=covQueue.shift();if(COVERS[id]!==undefined||!covMeta[id])continue;covActive++;
+    findCover(covMeta[id]).then(u=>{COVERS[id]=u||'-';saveCovers();if(u)document.querySelectorAll(`.cov[data-cov="${id}"]`).forEach(el=>{if(!el.querySelector('img'))putImg(el,u)})})
+      .catch(()=>{}).finally(()=>{covActive--;pumpCovers()})}
+}
+async function itunes(term,country){
+  const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),6000);
+  try{const r=await fetch(`https://itunes.apple.com/search?entity=album&limit=8&country=${country}&term=${encodeURIComponent(term)}`,{signal:ctl.signal});
+    if(!r.ok)return [];const j=await r.json();return j.results||[]}finally{clearTimeout(tm)}
+}
+function pickCover(res,a){
+  const nt=norm(a.t),na=norm(a.a);
+  const sc=r=>{const ct=norm(r.collectionName||''),ca=norm(r.artistName||'');let s=0;
+    if(ca===na)s+=3;else if(ca.includes(na)||na.includes(ca))s+=2;
+    if(ct===nt)s+=3;else if(ct.startsWith(nt)||ct.includes(nt)||nt.includes(ct))s+=2;return s};
+  const best=res.map(r=>[sc(r),r]).filter(x=>x[0]>=4).sort((x,y)=>y[0]-x[0])[0];
+  return best&&best[1].artworkUrl100?best[1].artworkUrl100.replace(/\/\d+x\d+bb\./,'/300x300bb.'):null;
+}
+async function findCover(a){
+  const term=a.a+' '+a.t;
+  let u=pickCover(await itunes(term,'US'),a);if(u)return u;
+  u=pickCover(await itunes(term,'RU'),a);if(u)return u;
+  return pickCover(await itunes(a.t,'US'),a);
+}
+
 /* ============ STATE ============ */
 const KEY='samewave_profile_v1';
 let S = {name:'',genres:[],moods:[],albums:[],done:false,people:{joined:false,mode:'friends',adult:false,visible:true}};
@@ -442,8 +492,8 @@ function chipList(el,items,sel,max){
 }
 function albRow(a,mode){
   const k=albumKey(a);
-  if(mode==='add')return `<div class="alb"><div class="cov">${cover(a)}</div><div class="meta"><div class="t">${esc(a.t)}</div><div class="a">${esc(a.a)}${a.y?' · '+a.y:''}${a.src?' · '+a.src:''}</div></div><button class="act add" data-add="${esc(k)}">+</button></div>`;
-  return `<div><div class="alb"><div class="cov">${cover(a)}</div><div class="meta"><div class="t">${esc(a.t)}</div><div class="a">${esc(a.a)}${a.y?' · '+a.y:''}</div></div><button class="rate ${a.r?'set':''}" data-rate="${esc(k)}">${a.r||'—'}</button><button class="act" data-del="${esc(k)}">×</button></div><div class="rater" data-for="${esc(k)}" style="display:none">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="${a.r===n?'on':''}" data-n="${n}">${n}</button>`).join('')}</div></div>`;
+  if(mode==='add')return `<div class="alb">${covBox(a)}<div class="meta"><div class="t">${esc(a.t)}</div><div class="a">${esc(a.a)}${a.y?' · '+a.y:''}${a.src?' · '+a.src:''}</div></div><button class="act add" data-add="${esc(k)}">+</button></div>`;
+  return `<div><div class="alb">${covBox(a)}<div class="meta"><div class="t">${esc(a.t)}</div><div class="a">${esc(a.a)}${a.y?' · '+a.y:''}</div></div><button class="rate ${a.r?'set':''}" data-rate="${esc(k)}">${a.r||'—'}</button><button class="act" data-del="${esc(k)}">×</button></div><div class="rater" data-for="${esc(k)}" style="display:none">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="${a.r===n?'on':''}" data-n="${n}">${n}</button>`).join('')}</div></div>`;
 }
 let lastResults=[];
 function searchLocal(q){
@@ -468,9 +518,10 @@ function searchMB(q){
     }catch(e){/* сеть недоступна — работаем на встроенном каталоге */}
   },600);
 }
-function drawResults(){$('#results').innerHTML=lastResults.length?lastResults.map(a=>albRow(a,'add')).join(''):'<div class="empty">Ничего не нашлось. Добавь вручную ↓</div>'}
+function drawResults(){$('#results').innerHTML=lastResults.length?lastResults.map(a=>albRow(a,'add')).join(''):'<div class="empty">Ничего не нашлось. Добавь вручную ↓</div>';hydrateCovers($('#results'))}
 function drawMine(el){
   el.innerHTML=S.albums.length?S.albums.map(a=>albRow(a,'mine')).join(''):'<div class="empty">Пока пусто</div>';
+  hydrateCovers(el);
 }
 function render(id){
   if(id==='welcome'){
@@ -492,9 +543,11 @@ function render(id){
       <div class="who">${esc(S.name||'Слушатель')} · твой архетип</div>
       <div class="arch display">${esc(d.arch)}</div>
       <div class="tags">${d.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
+      <div class="covrow">${S.albums.slice().sort((x,y)=>(y.r||0)-(x.r||0)).slice(0,5).map(covBox).join('')}</div>
       <div class="stats"><div><b>${d.count}</b><span>альбомов</span></div><div><b>${d.era}</b><span>главная эпоха</span></div><div><b>${d.avg}</b><span>средняя оценка</span></div></div>`;
   }
   if(id==='match'){$('#myCode').textContent=encodeProfile(S)}
+  if(id==='wave')hydrateCovers($('#dnaCard'));
   if(id==='people'){renderPeople()}
   if(id==='library'){drawMine($('#libAlbums'));$('#resetConfirm').style.display='none'}
   updateNext();
@@ -521,10 +574,11 @@ function showMatch(fr){
   $('#matchResult').innerHTML=`<div class="spacer"></div><div class="dna"><div class="brand display"><span>SAME WAVE</span><span>MATCH</span></div>
    <div class="score"><div class="who">${esc(S.name||'Ты')} × ${esc(fr.name||'друг')}</div><div class="pct display">${c.score}%</div><div class="lbl">${lbl}</div><div class="desc">${desc}</div></div>
    <div class="bars">${Object.keys(labels).filter(k=>c.parts[k]!=null).map(k=>`<div class="bar"><div class="top"><span>${labels[k]}</span><span>${Math.round(c.parts[k]*100)}%</span></div><div class="track"><div class="fill" data-w="${Math.round(c.parts[k]*100)}"></div></div></div>`).join('')}</div>
-   ${sharedAlbums.length?`<div class="shared"><div class="hint">Общие альбомы</div><div class="tags">${sharedAlbums.map(a=>`<span>${esc(a.t)}</span>`).join('')}</div></div>`:''}
+   ${sharedAlbums.length?`<div class="shared"><div class="hint">Общие альбомы</div><div class="covrow" style="margin:6px 0 8px">${sharedAlbums.slice(0,5).map(covBox).join('')}</div><div class="tags">${sharedAlbums.map(a=>`<span>${esc(a.t)}</span>`).join('')}</div></div>`:''}
    ${sharedArtists.length?`<div class="shared"><div class="hint">Общие исполнители</div><div class="tags">${[...new Set(sharedArtists)].map(a=>`<span>${esc(a)}</span>`).join('')}</div></div>`:''}
    ${c.rated?'':'<div class="hint">Оцените общие альбомы, чтобы учесть сходство оценок.</div>'}
   </div>`;
+  hydrateCovers($('#matchResult'));
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%'),50));
   setTimeout(()=>$('#matchResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
@@ -574,7 +628,7 @@ function personCard(row,opts={}){
     ${soundprint(row.code).replace('class="sp"','class="sp" preserveAspectRatio="none"')}
     <div class="top"><span class="nm">${esc(fr.name||'Слушатель')}</span><span class="pct display">${c.score}%</span></div>
     <div class="ar">${esc(archOf(fr))}${MODE_LBL[row.mode]?' · '+MODE_LBL[row.mode]:''}${row.waved_me&&!opts.inbox?' · <b style="color:var(--fg)">прислал(а) тебе волну</b>':''}</div>
-    ${shared.length?`<div class="tags">${shared.map(a=>`<span>${esc(a.t)}</span>`).join('')}</div>`:`<div class="tags">${fr.genres.slice(0,3).map(g=>`<span>${esc((GENRES.find(x=>x[0]===g)||[0,0,g])[2])}</span>`).join('')}</div>`}
+    ${shared.length?`<div class="covrow">${shared.map(covBox).join('')}</div><div class="tags">${shared.map(a=>`<span>${esc(a.t)}</span>`).join('')}</div>`:`<div class="tags">${fr.genres.slice(0,3).map(g=>`<span>${esc((GENRES.find(x=>x[0]===g)||[0,0,g])[2])}</span>`).join('')}</div>`}
     <div class="acts">${acts}<button class="btn ghost" data-more="${id}" style="flex:0 0 auto;width:auto;padding:11px 14px">Подробнее</button><button class="dots" data-dots="${id}">⋯</button></div>
     <div class="menu" data-menu="${id}"><button class="btn small ghost" data-hide="${id}">Скрыть</button><button class="btn small ghost danger" data-report="${id}">Пожаловаться</button></div>
   </div>`;
@@ -617,7 +671,7 @@ function renderPeople(){
     if(mutual.length)html+='<h2>Взаимные волны</h2>'+mutual.map(r=>personCard(r,{inbox:true})).join('');
     if(inc.length)html+='<h2>Тебе прислали волну</h2>'+inc.map(r=>personCard(r,{inbox:true})).join('');
   }
-  el.innerHTML=html;
+  el.innerHTML=html;hydrateCovers(el);
 }
 async function loadPeople(){
   if(!canNet()||!S.people.joined)return;
