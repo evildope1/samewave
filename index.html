@@ -463,7 +463,7 @@ async function findCover(a){
 
 /* ============ STATE ============ */
 const KEY='samewave_profile_v1';
-let S = {name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:'a',people:{joined:false,mode:'friends',adult:false,visible:true}};
+let S = {name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:'b',people:{joined:false,mode:'friends',adult:false,visible:true}};
 function load(){try{const v=localStorage.getItem(KEY);if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}}
 function save(){S.people=S.people||{joined:false,mode:'friends',adult:false,visible:true};if(S.done&&S.people.joined)syncSoon();const v=JSON.stringify(S);try{localStorage.setItem(KEY,v)}catch(e){}
   try{if(inTG&&TG.CloudStorage)TG.CloudStorage.setItem(KEY,v)}catch(e){}}
@@ -848,7 +848,7 @@ $('#addMoreBtn').onclick=()=>{$('#q').value='';show('albums')};
 $('#editGenres').onclick=()=>show('genres');$('#editMoods').onclick=()=>show('moods');
 $('#resetBtn').onclick=()=>$('#resetConfirm').style.display='block';
 $('#resetNo').onclick=()=>$('#resetConfirm').style.display='none';
-$('#resetYes').onclick=()=>{if(S.people&&S.people.joined&&canNet())api('sw_delete_me',{}).catch(()=>{});S={name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:S.motion||'a',people:{joined:false,mode:'friends',adult:false,visible:true}};save();stack=[];show('welcome',false)};
+$('#resetYes').onclick=()=>{if(S.people&&S.people.joined&&canNet())api('sw_delete_me',{}).catch(()=>{});S={name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:S.motion||'b',people:{joined:false,mode:'friends',adult:false,visible:true}};save();stack=[];show('welcome',false)};
 // В режиме редактирования жанров/настроений после онбординга — кнопка "Готово"
 const _upd=updateNext;updateNext=function(){_upd();if(S.done&&(cur==='genres'||cur==='moods')){$('#nextBtn').textContent='Готово';$('#sticky').style.display='block'}};
 const _next=$('#nextBtn').onclick;$('#nextBtn').onclick=()=>{if(S.done&&(cur==='genres'||cur==='moods')){save();stack=[];show('library',false);return}_next()};
@@ -856,7 +856,7 @@ const _next=$('#nextBtn').onclick;$('#nextBtn').onclick=()=>{if(S.done&&(cur==='
 
 /* ============ MOTION ============ */
 const MOTIONS=[['a','Чистые'],['b','Пружина'],['c','Живая волна']];
-function applyMotion(){document.body.classList.remove('m-a','m-b','m-c');document.body.classList.add('m-'+(S.motion||'a'))}
+function applyMotion(){document.body.classList.remove('m-a','m-b','m-c');document.body.classList.add('m-'+(S.motion||'b'))}
 function splitChars(t){return [...String(t)].map((ch,i)=>`<span style="--i:${i}">${esc(ch)}</span>`).join('')}
 function prepSP(svg,live){
   if(!svg)return;svg.querySelectorAll('path').forEach((p,i)=>{let L=1200;try{L=Math.ceil(p.getTotalLength())}catch(e){}p.style.setProperty('--len',L);p.style.setProperty('--i',i);p.style.setProperty('--d',i%2?1:-1)});
@@ -962,7 +962,7 @@ $('#rateBack').onclick=()=>{stack=[];show('wave',false)};
 let pendingFriend=null;
 function boot(){
   if(TG){try{TG.ready();TG.expand();TG.setHeaderColor&&TG.setHeaderColor('#000000');TG.setBackgroundColor&&TG.setBackgroundColor('#000000');TG.BackButton&&TG.BackButton.onClick(back)}catch(e){}}
-  load();S.rated=S.rated||{};S.motion=(location.search.match(/motion=([abc])/)||[])[1]||S.motion||'a';applyMotion();
+  load();S.rated=S.rated||{};S.motion=(location.search.match(/motion=([abc])/)||[])[1]||S.motion||'b';applyMotion();
   cloudLoad(()=>{applyMotion();
     const sp=inTG&&TG.initDataUnsafe&&TG.initDataUnsafe.start_param;
     const hashCode=(location.hash.match(/^#c-([A-Za-z0-9_-]+)/)||[])[1];
