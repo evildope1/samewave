@@ -638,7 +638,7 @@ p.sub{color:var(--muted);margin:0 0 18px}
 <script>
 /* ============ CONFIG ============ */
 // После создания бота и Mini App в @BotFather впиши сюда ссылку вида https://t.me/<bot>/<app>
-const APP_LINK = 'https://t.me/samewavebot/app';
+const APP_LINK = 'https://t.me/samewavemusicbot/app';
 // Supabase → Project Settings → API: Project URL и anon/publishable key (ключ публичный, его можно хранить в приложении)
 const SUPABASE_URL = 'https://hkqvwmdlkobdppoczieu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_YCBV5XKcMIb7WDb7wcQGhg_lXuFLT8Q';
@@ -1074,7 +1074,7 @@ function setupHTML(){
 function renderPeople(){
   const el=$('#peopleBody');
   if(!SUPABASE_URL||!SUPABASE_KEY){el.innerHTML='<div class="notice">Поиск людей скоро откроется. А пока сравнивайся с друзьями во вкладке «Совместимость».</div>';return}
-  if(!inTG){el.innerHTML='<div class="notice">Поиск людей работает внутри Telegram. Открой SAME WAVE через бота <b>@samewavebot</b>.</div>';return}
+  if(!inTG){el.innerHTML='<div class="notice">Поиск людей работает внутри Telegram. Открой SAME WAVE через бота <b>@samewavemusicbot</b>.</div>';return}
   if(!S.people.joined||P.view==='settings'){el.innerHTML=setupHTML();return}
   const unread=(P.inbox||[]).filter(r=>!r.mutual).length;
   let html=`<div class="seg"><button data-view="feed" class="${P.view==='feed'?'on':''}">Подборка</button><button data-view="inbox" class="${P.view==='inbox'?'on':''}">Волны${unread?`<span class="badge">${unread}</span>`:''}</button><button data-view="chats" class="${P.view==='chats'?'on':''}">Чаты${P.unreadMsg?`<span class="badge">${P.unreadMsg}</span>`:''}</button><button data-view="settings" aria-label="Настройки">⚙︎</button></div>`;
@@ -1299,7 +1299,7 @@ async function buildStory(kind){
     if(shared.length){ctx.fillStyle='#8a8a8a';ctx.font=`600 32px ${M}`;ctx.fillText('Общие альбомы',80,y+20);await drawCovers(ctx,shared,y+50,176)}
   }
   ctx.textAlign='center';ctx.fillStyle='#f2f2f2';ctx.font=`34px ${D}`;spaced(ctx,'FIND YOUR FREQUENCY',540,1750,6,'center');
-  ctx.fillStyle='#8a8a8a';ctx.font=`600 32px ${M}`;ctx.textAlign='center';ctx.fillText(kind==='match'?'А вы на одной волне? t.me/samewavebot':'Узнай свою волну: t.me/samewavebot',540,1820);
+  ctx.fillStyle='#8a8a8a';ctx.font=`600 32px ${M}`;ctx.textAlign='center';ctx.fillText(kind==='match'?'А вы на одной волне? t.me/samewavemusicbot':'Узнай свою волну: t.me/samewavemusicbot',540,1820);
   return await new Promise(r=>cv.toBlob(r,'image/png'));
 }
 async function uploadStory(){
