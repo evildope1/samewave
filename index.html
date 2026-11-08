@@ -131,6 +131,45 @@ body.m-g .hudring .r2{animation:spin 5s linear infinite reverse;transform-origin
 @keyframes sheetup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .sheet-img{margin:12px auto 14px;width:min(62vw,300px);aspect-ratio:9/16;border-radius:14px;overflow:hidden;border:1px solid #222;display:flex;align-items:center;justify-content:center}
 .sheet-img img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ===== Окно альбома ===== */
+.alb{transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .2s}
+.alb:active{transform:scale(.985);border-color:#3a3a3a}
+.cov[data-cov]{cursor:pointer}
+.alb-in{padding-top:12px}
+.alb-hero{position:relative;width:190px;height:190px;margin:8px auto 18px;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.alb-hero.open{transform:translateX(-38px)}
+.vwrap{position:absolute;top:6px;left:6px;width:178px;height:178px;transition:transform .8s cubic-bezier(.2,.8,.2,1) .15s}
+.alb-hero.open .vwrap{transform:translateX(78px)}
+.vinyl{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle,#ddd 0 6%,#111 6.5% 7.5%,transparent 8%),radial-gradient(circle,#2a2a2a 0 22%,transparent 22.5%),repeating-radial-gradient(circle,#0c0c0c 0 2px,#181818 2px 3px);box-shadow:0 0 0 1px #222,0 10px 30px rgba(0,0,0,.6)}
+.vinyl::after{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 30deg,transparent 0 20%,rgba(255,255,255,.07) 25%,transparent 30% 70%,rgba(255,255,255,.05) 75%,transparent 80%)}
+.alb-hero.playing .vinyl{animation:spinv 1.8s linear infinite}
+@keyframes spinv{to{transform:rotate(360deg)}}
+.alb-cov{position:absolute;inset:0;z-index:2;border-radius:10px;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.7)}
+.alb-cov .cov{width:100%;height:100%}.alb-cov svg{display:block;width:100%;height:100%}
+.alb-t{font-size:22px;font-weight:800;text-align:center;line-height:1.2}
+.alb-a{color:var(--silver);text-align:center;margin-top:4px}
+.alb-m{color:var(--muted);text-align:center;font-size:13px;margin-top:6px;min-height:18px}
+.alb-acts{display:flex;gap:8px;justify-content:center;margin:16px 0 8px;flex-wrap:wrap}
+.alb-acts .btn{width:auto;padding:10px 14px;font-size:14px;border-radius:12px}
+.trk{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #161616;position:relative;cursor:pointer;transition:background .2s}
+.trk:active{background:#111}
+.trk .n{width:22px;text-align:center;color:var(--muted);font-size:13px;flex:none}
+.trk .tt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk .d{color:var(--muted);font-size:12px;flex:none}
+.trk .pb{width:30px;height:30px;border-radius:50%;border:1px solid #333;flex:none;display:flex;align-items:center;justify-content:center}
+.trk .pb svg{width:12px;height:12px}
+.trk.na{opacity:.45;cursor:default}
+.trk.on .tt{font-weight:800}
+.trk .pb svg path{fill:#fff}.trk.on .pb{background:#fff;border-color:#fff}.trk.on .pb svg path{fill:#000}
+.trk .prog{position:absolute;left:0;bottom:-1px;height:1px;background:#fff;width:0}
+.eqm{display:none;gap:2px;align-items:flex-end;height:12px;width:22px;justify-content:center;flex:none}
+.trk.on.play .n{display:none}.trk.on.play .eqm{display:flex}
+.eqm i{width:3px;background:#fff;border-radius:1px;animation:eqm .9s ease-in-out infinite}
+.eqm i:nth-child(2){animation-delay:-.3s}.eqm i:nth-child(3){animation-delay:-.6s}
+@keyframes eqm{0%,100%{height:3px}50%{height:12px}}
+.skel{height:14px;border-radius:7px;margin:16px 4px;background:linear-gradient(90deg,#141414 0,#222 50%,#141414 100%);background-size:200% 100%;animation:shim 1.2s linear infinite}
+@keyframes shim{to{background-position:-200% 0}}
 /* ===== Оцени альбом ===== */
 .ratecta{display:flex;align-items:center;gap:14px;padding:12px;border-radius:18px;background:var(--card);border:1px solid var(--line);margin-top:12px;width:100%;text-align:left}
 .ratecta .cov{width:56px;height:56px;border-radius:10px;overflow:hidden;flex:none}
@@ -411,6 +450,14 @@ p.sub{color:var(--muted);margin:0 0 18px}
   <div class="row"><button class="btn ghost" id="sheetSave">Сохранить</button><button class="btn ghost" id="sheetLink">Отправить ссылку</button></div>
   <p class="hint" id="sheetHint"></p>
 </div></div>
+<div class="sheet" id="albSheet"><div class="sheet-in alb-in">
+  <div class="rtop"><span></span><button class="link" id="albClose">Закрыть</button></div>
+  <div class="alb-hero" id="albHero"><div class="vwrap"><div class="vinyl"></div></div><div class="alb-cov" id="albCov"></div></div>
+  <div class="alb-t" id="albT"></div><div class="alb-a" id="albA"></div><div class="alb-m" id="albM"></div>
+  <div class="alb-acts" id="albActs"></div>
+  <div id="albTracks"></div>
+  <p class="hint" id="albHint" style="text-align:center"></p>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -512,7 +559,7 @@ function covId(a){return h36(norm(a.t)+'|'+norm(a.a),7)}
 const covMeta={};
 const CAT_COV_BASE='https://is1-ssl.mzstatic.com/image/thumb/';
 function catCover(a){const c=a.c!=null?a.c:CATALOG.findIndex(x=>x[0]===a.t&&x[1]===a.a);const p=c>=0&&typeof CAT_COVERS!=='undefined'?CAT_COVERS[c]:null;return p===-1?'-':p?CAT_COV_BASE+p+'/300x300bb.jpg':null}
-function covBox(a){const id=covId(a);covMeta[id]={t:a.t,a:a.a};const cc=catCover(a);if(cc)COVERS[id]=cc;const u=COVERS[id];
+function covBox(a){const id=covId(a);covMeta[id]={t:a.t,a:a.a,y:a.y||null,g:a.g||null,c:a.c};const cc=catCover(a);if(cc)COVERS[id]=cc;const u=COVERS[id];
   return `<div class="cov" data-cov="${id}">${cover(a)}${u&&u!=='-'?`<img src="${esc(u)}" alt="" class="ok" onerror="this.remove()">`:''}</div>`}
 function saveCovers(){try{localStorage.setItem(COV_KEY,JSON.stringify(COVERS))}catch(e){}}
 const covQueue=[];let covActive=0;
@@ -1009,6 +1056,94 @@ $('#sheetSave').onclick=async e=>{if(!STORY.blob)return;
   const a=document.createElement('a');a.href=URL.createObjectURL(STORY.blob);a.download='samewave.png';document.body.appendChild(a);a.click();a.remove();toast('Картинка сохранена')};
 $('#sheetLink').onclick=()=>share();
 $('#storyBtn').onclick=()=>openStory('dna');
+
+
+/* ============ ALBUM SHEET: треклист и превью ============ */
+const ALB_KEY='sw_albinfo_v1';let ALBINFO={};try{ALBINFO=JSON.parse(localStorage.getItem(ALB_KEY)||'{}')}catch(e){}
+function saveAlbInfo(){try{localStorage.setItem(ALB_KEY,JSON.stringify(ALBINFO))}catch(e){}}
+function pickBest(res,a){
+  const nt=norm(a.t),na=norm(a.a);
+  const sc=r=>{const ct=norm(r.collectionName||''),ca=norm(r.artistName||'');let s=0;
+    if(ca===na)s+=3;else if(ca.includes(na)||na.includes(ca))s+=2;
+    if(ct===nt)s+=3;else if((nt.length>3&&ct.startsWith(nt+' '))||(ct.length>3&&nt.startsWith(ct+' ')))s+=2;return s};
+  const best=res.map(r=>[sc(r),r]).filter(x=>x[0]>=4).sort((x,y)=>y[0]-x[0]||(y[1].trackCount||0)-(x[1].trackCount||0))[0];
+  return best?best[1]:null;
+}
+async function itLookup(cid,country){
+  const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),8000);
+  try{const r=await fetch(`https://itunes.apple.com/lookup?id=${cid}&entity=song&limit=200&country=${country}`,{signal:ctl.signal});if(!r.ok)return [];const j=await r.json();return j.results||[]}finally{clearTimeout(tm)}
+}
+async function albumInfo(a){
+  const id=covId(a);if(ALBINFO[id])return ALBINFO[id];
+  let hit=null,country='US';
+  for(const [term,cc] of [[a.a+' '+a.t,'US'],[a.a+' '+a.t,'RU'],[a.t,'US']]){hit=pickBest(await itunes(term,cc),a);if(hit){country=cc;break}}
+  if(!hit){ALBINFO[id]={none:1};saveAlbInfo();return ALBINFO[id]}
+  const res=await itLookup(hit.collectionId,country);
+  const tracks=res.filter(x=>x.wrapperType==='track'&&x.kind==='song').sort((x,y)=>(x.discNumber-y.discNumber)||(x.trackNumber-y.trackNumber))
+    .map(x=>({n:x.trackNumber,t:x.trackName,ms:x.trackTimeMillis||0,p:x.previewUrl||''}));
+  const info={url:hit.collectionViewUrl||'',year:(hit.releaseDate||'').slice(0,4),genre:hit.primaryGenreName||'',count:hit.trackCount||tracks.length,
+    art:hit.artworkUrl100?hit.artworkUrl100.replace(/\/\d+x\d+bb\./,'/600x600bb.'):'',tracks};
+  ALBINFO[id]=info;if(info.art&&!COVERS[id]){COVERS[id]=info.art.replace('600x600','300x300');saveCovers()}saveAlbInfo();return info;
+}
+const fmt=ms=>{const s=Math.round(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const PLAY_SVG='<svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>',PAUSE_SVG='<svg viewBox="0 0 12 12"><path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z"/></svg>';
+const AU=new Audio();AU.preload='none';let ALB={a:null,info:null,i:-1};
+function openLink(u){if(inTG){try{TG.openLink(u);return}catch(e){}}window.open(u,'_blank')}
+async function openAlbum(a){
+  stopTrack();ALB={a,info:null,i:-1};
+  const sh=$('#albSheet'),hero=$('#albHero');sh.classList.add('on');hero.classList.remove('open','playing');
+  $('#albCov').innerHTML=covBox(a);hydrateCovers($('#albCov'));
+  $('#albT').textContent=a.t;$('#albA').textContent=a.a;$('#albM').textContent=a.y?String(a.y):'';$('#albHint').textContent='';
+  renderAlbActs();
+  $('#albTracks').innerHTML='<div class="skel"></div><div class="skel" style="width:80%"></div><div class="skel" style="width:90%"></div><div class="skel" style="width:70%"></div>';
+  setTimeout(()=>hero.classList.add('open'),120);haptic();
+  let info;try{info=await albumInfo(a)}catch(e){info=null}
+  if(ALB.a!==a)return;ALB.info=info;
+  if(!info||info.none||!info.tracks.length){$('#albTracks').innerHTML='';$('#albHint').textContent=info&&info.none?'Треклист для этого альбома не нашёлся в каталоге. Открой его в Яндекс Музыке.':'Не получилось загрузить треклист. Проверь интернет и открой альбом ещё раз.';return}
+  const tot=info.tracks.reduce((s,t)=>s+t.ms,0);
+  $('#albM').textContent=[info.year||a.y,info.genre,`${info.tracks.length} ${plural(info.tracks.length,'трек','трека','треков')}`,tot?Math.round(tot/60000)+' мин':''].filter(Boolean).join(' · ');
+  $('#albTracks').innerHTML=info.tracks.map((t,i)=>`<div class="trk ${t.p?'':'na'}" data-i="${i}"><span class="n">${t.n||i+1}</span><span class="eqm"><i></i><i></i><i></i></span><span class="tt">${esc(t.t)}</span><span class="d">${t.ms?fmt(t.ms):''}</span><span class="pb">${t.p?PLAY_SVG:''}</span><span class="prog"></span></div>`).join('');
+  if(!info.tracks.some(t=>t.p))$('#albHint').textContent='Превью для этого альбома недоступны.';
+  else $('#albHint').textContent='Превью по 30 секунд — iTunes';
+}
+function plural(n,a,b,c){const m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<12||h>14)?b:c}
+function renderAlbActs(){
+  const a=ALB.a;const inFav=S.albums.some(x=>albumKey(x)===albumKey(a));const r=(S.rated||{})[albumKey(a)];
+  $('#albActs').innerHTML=`<button class="btn ${inFav?'ghost':''}" id="albFav">${inFav?'В любимых ✓':'+ В любимые'}</button><button class="btn ghost" id="albRate">${r&&r.r?'Моя оценка: '+r.r:'Оценить'}</button><button class="btn ghost" id="albYa">Яндекс Музыка</button>`;
+}
+function playTrack(i){
+  const info=ALB.info;if(!info)return;const t=info.tracks[i];if(!t||!t.p)return;
+  if(ALB.i===i&&!AU.paused){AU.pause();return}
+  if(ALB.i!==i){AU.src=t.p;ALB.i=i}
+  AU.play().catch(()=>toast('Не удалось включить превью'));
+}
+function stopTrack(){try{AU.pause()}catch(e){}ALB.i=-1;syncTrk()}
+function syncTrk(){
+  const playing=!AU.paused&&ALB.i>=0;$('#albHero').classList.toggle('playing',playing);
+  document.querySelectorAll('#albTracks .trk').forEach(el=>{const on=+el.dataset.i===ALB.i;el.classList.toggle('on',on);el.classList.toggle('play',on&&playing);
+    const pb=el.querySelector('.pb');if(pb&&ALB.info&&ALB.info.tracks[+el.dataset.i].p)pb.innerHTML=on&&playing?PAUSE_SVG:PLAY_SVG;if(!on)el.querySelector('.prog').style.width='0'});
+}
+AU.addEventListener('play',syncTrk);AU.addEventListener('pause',syncTrk);
+AU.addEventListener('timeupdate',()=>{const el=document.querySelector(`#albTracks .trk[data-i="${ALB.i}"] .prog`);if(el&&AU.duration)el.style.width=(AU.currentTime/AU.duration*100)+'%'});
+AU.addEventListener('ended',()=>{const tr=ALB.info&&ALB.info.tracks;if(!tr)return;let j=ALB.i+1;while(j<tr.length&&!tr[j].p)j++;if(j<tr.length)playTrack(j);else{ALB.i=-1;syncTrk()}});
+$('#albTracks').addEventListener('click',e=>{const r=e.target.closest('.trk');if(!r||r.classList.contains('na'))return;haptic();playTrack(+r.dataset.i)});
+function closeAlbum(){$('#albSheet').classList.remove('on');stopTrack();ALB.a=null}
+$('#albClose').onclick=closeAlbum;
+$('#albSheet').addEventListener('click',e=>{if(e.target.id==='albSheet')closeAlbum()});
+$('#albActs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const a=ALB.a;
+  if(b.id==='albFav'){const k=albumKey(a);const i=S.albums.findIndex(x=>albumKey(x)===k);
+    if(i>=0){S.albums.splice(i,1);toast('Убрано из любимых')}else{if(S.albums.length>=30){toast('Максимум 30 альбомов');return}S.albums.push({t:a.t,a:a.a,y:a.y||null,g:a.g||null,c:a.c,r:0});toast('Добавлено в любимые')}
+    save();renderAlbActs();if(['albums','library','wave'].includes(cur))render(cur);return}
+  if(b.id==='albRate'){closeAlbum();R={cur:Object.assign({},a),val:0,done:false};stack=[cur];show('rate',false);renderRate();return}
+  if(b.id==='albYa'){openLink('https://music.yandex.ru/search?text='+encodeURIComponent(a.a+' '+a.t));return}
+});
+// Нажатие на любую обложку или строку альбома открывает окно альбома
+document.addEventListener('click',e=>{
+  if(e.target.closest('button:not(.ratecta),a,#albSheet,#sheet,.ratecta,.rater'))return;
+  let cv=e.target.closest('.cov[data-cov]');
+  if(!cv){const row=e.target.closest('.alb');if(row&&e.target.closest('.meta'))cv=row.querySelector('.cov[data-cov]')}
+  if(!cv)return;const m=covMeta[cv.dataset.cov];if(m)openAlbum(m);
+});
 
 /* ============ SHARE ============ */
 function shareLink(){return APP_LINK+'?startapp='+encodeProfile(S)}
