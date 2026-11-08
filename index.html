@@ -48,12 +48,13 @@ body.m-b .dna.beam::before{content:'';position:absolute;inset:0;border-radius:in
 @keyframes beam{0%{--ang:0deg;opacity:0}10%{opacity:.9}90%{opacity:.9}100%{--ang:360deg;opacity:0}}
 body.m-b .digit{display:inline-block;animation:charblur .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*60ms)}
 /* ===== C · Живая волна: всё дышит в ритме, касание расходится звуковыми кольцами ===== */
-@keyframes breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(calc(var(--d,1)*2px)) scaleY(1.06)}}
+@keyframes breathe{0%,100%{transform:translate(0,0) scaleY(1)}25%{transform:translate(calc(var(--d,1)*2px),calc(var(--d,1)*-1.5px)) scaleY(1.05)}50%{transform:translate(0,calc(var(--d,1)*2.5px)) scaleY(.94)}75%{transform:translate(calc(var(--d,1)*-2px),0) scaleY(1.04)}}
 @keyframes ring{from{transform:translate(-50%,-50%) scale(0);opacity:.55}to{transform:translate(-50%,-50%) scale(1);opacity:0}}
 @keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 body.m-c .screen.on{animation:wipe .5s cubic-bezier(.65,0,.35,1)}
-body.m-c .sp path{transform-origin:50% 50%;transform-box:fill-box}
-body.m-c .sp.live path{animation:breathe 3.2s ease-in-out infinite;animation-delay:calc(var(--i,0)*-110ms)}
+.sp path{transform-origin:50% 50%;transform-box:fill-box}
+.sp.live path{animation:breathe 3.6s ease-in-out infinite;animation-delay:calc(var(--i,0)*-120ms)}
+body.m-c .sp.live path{animation-duration:3.2s}
 body.m-c .chars span{animation:charwave 1.1s ease both;animation-delay:calc(var(--i)*40ms)}
 @keyframes charwave{0%{opacity:0;transform:translateY(.6em)}60%{opacity:1;transform:translateY(-.12em)}100%{transform:none}}
 body.m-c .stg{animation:fade .5s ease both;animation-delay:calc(var(--i)*70ms + 300ms)}
@@ -125,6 +126,13 @@ body.m-g .hudring .r1{animation:spin 8s linear infinite;transform-origin:75px 75
 body.m-g .hudring .r2{animation:spin 5s linear infinite reverse;transform-origin:75px 75px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+/* ===== Сторис ===== */
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center}
+.sheet.on{display:flex}
+.sheet-in{width:100%;max-width:520px;max-height:100vh;overflow:auto;background:#0b0b0b;border:1px solid #222;border-bottom:0;border-radius:22px 22px 0 0;padding:16px 18px calc(18px + var(--safe-b));animation:sheetup .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes sheetup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet-img{margin:12px auto 14px;width:min(62vw,300px);aspect-ratio:9/16;border-radius:14px;overflow:hidden;border:1px solid #222;display:flex;align-items:center;justify-content:center}
+.sheet-img img{width:100%;height:100%;object-fit:cover;display:block}
 /* ===== Оцени альбом ===== */
 .ratecta{display:flex;align-items:center;gap:14px;padding:12px;border-radius:18px;background:var(--card);border:1px solid var(--line);margin-top:12px;width:100%;text-align:left}
 .ratecta .cov{width:56px;height:56px;border-radius:10px;overflow:hidden;flex:none}
@@ -313,7 +321,8 @@ p.sub{color:var(--muted);margin:0 0 18px}
     <div class="dna" id="dnaCard"></div>
     <div class="spacer"></div>
     <div class="row">
-      <button class="btn" id="shareBtn">Поделиться волной</button>
+      <button class="btn" id="storyBtn">В сторис</button>
+      <button class="btn ghost" id="shareBtn">Ссылкой</button>
     </div>
     <div class="spacer"></div>
     <button class="ratecta" id="rateCta"></button>
@@ -382,6 +391,14 @@ p.sub{color:var(--muted);margin:0 0 18px}
   <button data-tab="match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>Совместимость</button>
   <button data-tab="library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>Альбомы</button>
 </div></nav>
+<div class="sheet" id="sheet"><div class="sheet-in">
+  <div class="rtop"><b>Карточка для сторис</b><button class="link" id="sheetClose">Закрыть</button></div>
+  <div class="sheet-img" id="sheetImg"><div class="empty">Рисую карточку…</div></div>
+  <div class="row"><button class="btn" id="sheetStory">Выложить в сторис</button></div>
+  <div class="spacer"></div>
+  <div class="row"><button class="btn ghost" id="sheetSave">Сохранить</button><button class="btn ghost" id="sheetLink">Отправить ссылку</button></div>
+  <p class="hint" id="sheetHint"></p>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -722,7 +739,8 @@ function showMatch(fr){
    ${sharedAlbums.length?`<div class="shared"><div class="hint">Общие альбомы</div><div class="covrow" style="margin:6px 0 8px">${sharedAlbums.slice(0,5).map(covBox).join('')}</div><div class="tags">${sharedAlbums.map(a=>`<span>${esc(a.t)}</span>`).join('')}</div></div>`:''}
    ${sharedArtists.length?`<div class="shared"><div class="hint">Общие исполнители</div><div class="tags">${[...new Set(sharedArtists)].map(a=>`<span>${esc(a)}</span>`).join('')}</div></div>`:''}
    ${c.rated?'':'<div class="hint">Оцените общие альбомы, чтобы учесть сходство оценок.</div>'}
-  </div>`;
+  </div><div class="spacer"></div><button class="btn" id="matchStory">Совместимость в сторис</button>`;
+  LAST_MATCH={fr,c,lbl};$('#matchStory').onclick=()=>openStory('match');
   hydrateCovers($('#matchResult'));motionAfter('matchResult');
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%'),50));
   setTimeout(()=>$('#matchResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
@@ -862,6 +880,92 @@ $('#peopleBody').addEventListener('click',async e=>{
   if(t.dataset.open&&inTG){e.preventDefault();try{TG.openTelegramLink('https://t.me/'+t.dataset.open)}catch(_){location.href=t.href}}
 });
 
+
+/* ============ STORY CARD ============ */
+let LAST_MATCH=null,STORY={blob:null,url:null,kind:null};
+function loadImg(src,cors){return new Promise(res=>{const im=new Image();if(cors)im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=()=>res(null);im.src=src})}
+function svgImg(svg,w,h){if(!/xmlns=/.test(svg))svg=svg.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg"');svg=svg.replace('<svg',`<svg width="${w}" height="${h}"`);return loadImg('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg))}
+async function coverImg(a){
+  const u=catCover(a)||COVERS[covId(a)];
+  if(u&&u!=='-'){const im=await loadImg(u.replace('300x300bb','600x600bb'),true);if(im)return im}
+  return svgImg(cover(a).replace(/font-family="Manrope"/,'font-family="Arial"'),300,300);
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function spaced(ctx,t,x,y,sp,align){ctx.textAlign='left';const w=[...t].reduce((s,ch)=>s+ctx.measureText(ch).width+sp,-sp);let cx=align==='center'?x-w/2:align==='right'?x-w:x;for(const ch of t){ctx.fillText(ch,cx,y);cx+=ctx.measureText(ch).width+sp}}
+function fitFont(ctx,t,max,size,fam){let s=size;do{ctx.font=`${s}px ${fam}`;s-=2}while(ctx.measureText(t).width>max&&s>20);return s+2}
+async function drawCovers(ctx,albums,y,size){
+  const n=albums.length;if(!n)return;const gap=20,tot=n*size+(n-1)*gap;let x=(1080-tot)/2;
+  const ims=await Promise.all(albums.map(coverImg));
+  ims.forEach(im=>{ctx.save();rr(ctx,x,y,size,size,18);ctx.clip();if(im){try{ctx.drawImage(im,x,y,size,size)}catch(e){}}else{ctx.fillStyle='#1a1a1a';ctx.fillRect(x,y,size,size)}ctx.restore();x+=size+gap});
+}
+async function buildStory(kind){
+  try{await Promise.all([document.fonts.load('80px Michroma'),document.fonts.load('800 60px Manrope'),document.fonts.load('600 36px Manrope')])}catch(e){}
+  const W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const ctx=cv.getContext('2d');
+  ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+  let g=ctx.createRadialGradient(540,520,40,540,520,900);g.addColorStop(0,'#1d1d1d');g.addColorStop(1,'#000');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  const D='Michroma, Arial, sans-serif',M='Manrope, Arial, sans-serif';
+  ctx.fillStyle='#8a8a8a';ctx.font=`26px ${D}`;spaced(ctx,'SAME WAVE',80,150,10);spaced(ctx,kind==='match'?'MATCH':'MUSIC DNA',1000,150,10,'right');
+  ctx.textAlign='left';
+  if(kind==='dna'){
+    const d=dna(),code=encodeProfile(S);
+    const sp=soundprint(code,920,420).replace(/stroke-width="\.?\d*\.?\d+"/g,'stroke-width="1.6"');
+    const im=await svgImg(sp,920,Math.round(920*(+sp.match(/viewBox="0 0 \d+ (\d+)"/)[1])/920));if(im)ctx.drawImage(im,80,250,920,im.height);
+    let y=820;
+    ctx.fillStyle='#8a8a8a';ctx.font=`600 38px ${M}`;ctx.fillText((S.name||'Слушатель')+' · мой архетип',80,y);
+    y+=110;ctx.fillStyle='#f2f2f2';fitFont(ctx,d.arch,920,84,D);ctx.fillText(d.arch,80,y);
+    y+=70;ctx.font=`600 32px ${M}`;let x=80;
+    for(const t of d.tags){const w=ctx.measureText(t).width+48;if(x+w>1000){x=80;y+=78}ctx.strokeStyle='#444';ctx.lineWidth=2;rr(ctx,x,y,w,60,30);ctx.stroke();ctx.fillStyle='#c9c9c9';ctx.fillText(t,x+24,y+41);x+=w+14}
+    y+=110;
+    const top=S.albums.slice().sort((a,b)=>(b.r||0)-(a.r||0)).slice(0,5);
+    await drawCovers(ctx,top,y,176);y+=176+50;
+    const st=[[d.count,'альбомов'],[d.era,'главная эпоха'],[d.avg,'средняя оценка']];
+    st.forEach(([v,l],i)=>{const bx=80+i*313;ctx.strokeStyle='#262626';ctx.lineWidth=2;rr(ctx,bx,y,293,150,22);ctx.stroke();ctx.fillStyle='#f2f2f2';ctx.font=`800 54px ${M}`;ctx.fillText(String(v),bx+28,y+72);ctx.fillStyle='#8a8a8a';ctx.font=`600 28px ${M}`;ctx.fillText(l,bx+28,y+118)});
+  }else{
+    const {fr,c,lbl}=LAST_MATCH;const me=S.name||'Я',other=fr.name||'друг';
+    ctx.textAlign='center';ctx.fillStyle='#c9c9c9';ctx.font=`600 44px ${M}`;ctx.fillText(me+' × '+other,540,330);
+    ctx.fillStyle='#f2f2f2';ctx.font=`230px ${D}`;ctx.fillText(c.score+'%',540,620);
+    ctx.font=`800 64px ${M}`;ctx.fillText(lbl,540,730);
+    ctx.textAlign='left';
+    const labels={albums:'Любимые альбомы',artists:'Исполнители',genres:'Жанры',ratings:'Оценки',eras:'Эпохи',moods:'Эстетика'};
+    let y=830;
+    Object.keys(labels).filter(k=>c.parts[k]!=null).forEach(k=>{const v=Math.round(c.parts[k]*100);ctx.fillStyle='#f2f2f2';ctx.font=`600 34px ${M}`;ctx.fillText(labels[k],80,y);ctx.textAlign='right';ctx.fillStyle='#8a8a8a';ctx.fillText(v+'%',1000,y);ctx.textAlign='left';
+      ctx.fillStyle='#1c1c1c';rr(ctx,80,y+18,920,12,6);ctx.fill();const gr=ctx.createLinearGradient(80,0,1000,0);gr.addColorStop(0,'#777');gr.addColorStop(1,'#fff');ctx.fillStyle=gr;rr(ctx,80,y+18,Math.max(12,920*v/100),12,6);ctx.fill();y+=96});
+    const shared=c.sharedA.map(k=>S.albums.find(a=>albumKey(a)===k)).filter(Boolean).slice(0,5);
+    if(shared.length){ctx.fillStyle='#8a8a8a';ctx.font=`600 32px ${M}`;ctx.fillText('Общие альбомы',80,y+20);await drawCovers(ctx,shared,y+50,176)}
+  }
+  ctx.textAlign='center';ctx.fillStyle='#f2f2f2';ctx.font=`34px ${D}`;spaced(ctx,'FIND YOUR FREQUENCY',540,1750,6,'center');
+  ctx.fillStyle='#8a8a8a';ctx.font=`600 32px ${M}`;ctx.textAlign='center';ctx.fillText(kind==='match'?'А вы на одной волне? t.me/samewavebot':'Узнай свою волну: t.me/samewavebot',540,1820);
+  return await new Promise(r=>cv.toBlob(r,'image/png'));
+}
+async function uploadStory(){
+  if(STORY.url)return STORY.url;
+  if(!SUPABASE_URL||!SUPABASE_KEY)throw new Error('нет хранилища');
+  const name=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2))+'.png';
+  const h={'Content-Type':'image/png','apikey':SUPABASE_KEY,'x-upsert':'false'};if(SUPABASE_KEY.startsWith('eyJ'))h.Authorization='Bearer '+SUPABASE_KEY;
+  const r=await fetch(SUPABASE_URL+'/storage/v1/object/cards/'+name,{method:'POST',headers:h,body:STORY.blob});
+  if(!r.ok)throw new Error('загрузка '+r.status);
+  STORY.url=SUPABASE_URL+'/storage/v1/object/public/cards/'+name;return STORY.url;
+}
+async function openStory(kind){
+  STORY={blob:null,url:null,kind};$('#sheet').classList.add('on');$('#sheetImg').innerHTML='<div class="empty">Рисую карточку…</div>';
+  const canStory=inTG&&TG.shareToStory&&TG.isVersionAtLeast&&TG.isVersionAtLeast('7.8');
+  $('#sheetStory').style.display=canStory?'':'none';
+  $('#sheetHint').textContent=canStory?'':(inTG?'Обнови Telegram, чтобы выкладывать в сторис прямо отсюда. Пока можно сохранить картинку.':'Открой в Telegram, чтобы выложить в сторис. Здесь можно сохранить картинку.');
+  try{STORY.blob=await buildStory(kind);const u=URL.createObjectURL(STORY.blob);$('#sheetImg').innerHTML=`<img src="${u}" alt="Карточка SAME WAVE">`}
+  catch(e){$('#sheetImg').innerHTML='<div class="empty">Не получилось нарисовать карточку</div>';console.warn(e)}
+}
+$('#sheetClose').onclick=()=>$('#sheet').classList.remove('on');
+$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')$('#sheet').classList.remove('on')});
+$('#sheetStory').onclick=async e=>{if(!STORY.blob)return;const b=e.currentTarget;b.disabled=true;b.textContent='Загружаю…';
+  try{const url=await uploadStory();TG.shareToStory(url,{text:STORY.kind==='match'?'Мы на одной волне? 🎧 SAME WAVE':'Моя музыкальная ДНК 🎧 SAME WAVE'})}
+  catch(err){toast('Ошибка: '+err.message)}b.disabled=false;b.textContent='Выложить в сторис'};
+$('#sheetSave').onclick=async e=>{if(!STORY.blob)return;
+  if(inTG&&TG.downloadFile&&TG.isVersionAtLeast&&TG.isVersionAtLeast('8.0')){const b=e.currentTarget;b.disabled=true;
+    try{const url=await uploadStory();TG.downloadFile({url,file_name:'samewave.png'})}catch(err){toast('Ошибка: '+err.message)}b.disabled=false;return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(STORY.blob);a.download='samewave.png';document.body.appendChild(a);a.click();a.remove();toast('Картинка сохранена')};
+$('#sheetLink').onclick=()=>share();
+$('#storyBtn').onclick=()=>openStory('dna');
+
 /* ============ SHARE ============ */
 function shareLink(){return APP_LINK+'?startapp='+encodeProfile(S)}
 function share(){
@@ -923,7 +1027,7 @@ function splitChars(t){return [...String(t)].map((ch,i)=>`<span style="--i:${i}"
 function prepSP(svg,live){
   if(!svg)return;svg.querySelectorAll('path').forEach((p,i)=>{let L=1200;try{L=Math.ceil(p.getTotalLength())}catch(e){}p.style.setProperty('--len',L);p.style.setProperty('--i',i);p.style.setProperty('--d',i%2?1:-1)});
   svg.classList.remove('draw','live');void svg.getBoundingClientRect();
-  if(S.motion==='c'){svg.classList.add('draw');setTimeout(()=>svg.classList.add('live'),1400)}else svg.classList.add('draw');
+  svg.classList.add('draw');clearTimeout(svg._lt);svg._lt=setTimeout(()=>svg.classList.add('live'),S.motion==='e'?2000:1500);
 }
 function countUp(el){
   const to=+el.dataset.count;if(isNaN(to))return;
