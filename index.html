@@ -284,6 +284,44 @@ textarea.rev:focus{border-color:#555}
 .favart .chip{padding:7px 12px;font-size:13px;border-style:dashed}
 .asearch{margin-top:10px}.asearch input{width:100%;box-sizing:border-box;background:#0c0c0c;border:1px solid #2a2a2a;border-radius:14px;padding:12px 14px;outline:none}
 .ares{display:flex;align-items:center;justify-content:space-between;padding:10px 4px;border-bottom:1px solid #161616}.ares b{display:block;font-size:14px}.ares small{color:var(--muted);font-size:12px}
+/* ===== Чаты ===== */
+.clist{display:flex;flex-direction:column}
+.crow{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid #161616;cursor:pointer}
+.cav{width:46px;height:46px;border-radius:50%;background:linear-gradient(140deg,#2a2a2a,#111);border:1px solid #333;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex:none}
+.cm{flex:1;min-width:0}.ct{display:flex;justify-content:space-between;gap:8px}.ct span{font-size:12px;color:var(--muted)}
+.cl{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.cl.un{color:var(--fg);font-weight:600}
+.cpct{font-size:12px;color:var(--silver);font-family:Michroma,Manrope,sans-serif}
+.chat-in{height:100vh;height:100dvh;max-height:none;border-radius:0;display:flex;flex-direction:column;padding:0;overflow:hidden}
+.chat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #1c1c1c;position:relative}
+.chat-head .link{font-size:22px;text-decoration:none;padding:4px 8px 4px 0}.chat-head .cav{width:38px;height:38px;font-size:15px}
+.chn{flex:1;min-width:0}.chn b{display:block}.chn small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-head .dots{width:36px;height:36px;border-radius:50%;font-weight:800;color:var(--silver)}
+.chat-head .menu{display:none;gap:6px;position:absolute;right:12px;top:58px;z-index:3;flex-direction:column;background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:8px}
+.chat-list{flex:1;overflow-y:auto;padding:12px 14px 8px;display:flex;flex-direction:column;gap:6px}
+.mday{text-align:center;font-size:11px;color:var(--muted);margin:10px 0 4px}
+.msg{max-width:80%;align-self:flex-start;background:#161616;border:1px solid #222;border-radius:18px 18px 18px 6px;padding:8px 12px 6px;animation:msgin .25s ease}
+.msg.me{align-self:flex-end;background:#f2f2f2;color:#000;border-color:#f2f2f2;border-radius:18px 18px 6px 18px}
+@keyframes msgin{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+.msg .mb{font-size:15px;line-height:1.4;white-space:pre-wrap;word-break:break-word}
+.msg .mt{display:block;text-align:right;font-size:10px;opacity:.5;margin-top:2px}
+.mtrk{display:flex;align-items:center;gap:10px;min-width:210px;cursor:pointer;padding:2px 0 4px}
+.mtrk .mc{width:44px;height:44px;border-radius:8px;overflow:hidden;background:#222;flex:none}.mtrk .mc img{width:100%;height:100%;object-fit:cover;display:block}
+.mtrk .mm{flex:1;min-width:0}.mtrk b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mtrk small{display:block;font-size:12px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mtrk .pb{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none}.mtrk .pb svg{width:12px;height:12px}.mtrk .pb svg path{fill:#000}
+.msg.me .mtrk .pb{background:#000}.msg.me .mtrk .pb svg path{fill:#fff}.mtrk .go{font-size:22px;opacity:.5}
+.chat-empty{margin:auto;text-align:center;max-width:320px;padding:20px 0}.chat-empty .display{font-size:40px;margin-bottom:6px}
+.ice{display:flex;flex-direction:column;gap:8px;margin-top:12px}.ice .chip{font-size:13px;text-align:left;border-radius:14px;padding:10px 12px}
+.chat-pick{display:none;max-height:45vh;overflow-y:auto;border-top:1px solid #1c1c1c;padding:10px 14px}.chat-pick.on{display:block}
+.chat-pick input{width:100%;box-sizing:border-box;background:#0c0c0c;border:1px solid #2a2a2a;border-radius:12px;padding:10px 12px;outline:none;margin-bottom:6px}
+.chat-pick .ares{gap:10px}.chat-pick .pc{width:38px;height:38px;border-radius:6px;overflow:hidden;background:#161616;flex:none}.chat-pick .pc img{width:100%;height:100%;object-fit:cover}
+.chat-bar{display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + var(--safe-b));border-top:1px solid #1c1c1c;background:#0b0b0b}
+.chat-bar input{flex:1;min-width:0;background:#141414;border:1px solid #262626;border-radius:20px;padding:11px 14px;outline:none;font-size:15px}
+.cb-att,.cb-send{width:40px;height:40px;border-radius:50%;flex:none;font-size:18px;font-weight:800}
+.cb-att{border:1px solid #333;color:var(--fg)}.cb-send{background:#fff;color:#000}
+.sendto{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 10px}.sendto .hint{width:100%;text-align:center;margin:0 0 4px}.sendto .chip{padding:7px 12px;font-size:13px}
+.seg button[data-view="settings"]{flex:0 0 44px}
+.chat-head .menu.on{display:flex}
+
 
 
 /* ===== Оцени альбом ===== */
@@ -586,6 +624,12 @@ p.sub{color:var(--muted);margin:0 0 18px}
   <div class="art-n" id="artN"></div><div class="art-m" id="artM"></div>
   <div class="alb-acts" id="artActs"></div>
   <div id="artBody"></div>
+</div></div>
+<div class="sheet" id="chatSheet"><div class="sheet-in chat-in">
+  <div class="chat-head" id="chatHead"></div>
+  <div class="chat-list" id="chatList"></div>
+  <div class="chat-pick" id="chatPick"></div>
+  <form class="chat-bar" id="chatForm"><button type="button" class="cb-att" id="chatAttach" aria-label="Отправить трек">♪</button><input id="chatIn" maxlength="1000" placeholder="Сообщение" autocomplete="off"><button type="submit" class="cb-send" aria-label="Отправить">↑</button></form>
 </div></div>
 <div class="mini" id="mini"><div class="mini-prog" id="miniProg"></div><div class="cov" id="miniCov"></div><div class="mini-m"><b id="miniT"></b><span id="miniA"></span></div><button class="mini-b" id="miniPlay" aria-label="Пауза"></button><button class="mini-x" id="miniX" aria-label="Закрыть плеер">×</button></div>
 <div class="toast" id="toast"></div>
@@ -998,7 +1042,7 @@ function personCard(row,opts={}){
   let acts='';
   if(opts.inbox){
     acts=row.mutual
-      ?(row.username?`<a class="btn" href="https://t.me/${esc(row.username)}" data-open="${esc(row.username)}">Написать в Telegram</a>`:`<div class="hint">У пользователя нет username — попроси его добавить в настройках Telegram.</div>`)
+      ?`<button class="btn" data-chat="${id}">Написать</button>`
       :`<button class="btn" data-wave="${id}">Ответить волной</button>`;
   }else{
     acts=row.waved_by_me?`<button class="btn ghost" disabled>Волна отправлена</button>`:`<button class="btn" data-wave="${id}">${row.waved_me?'Ответить волной':'Отправить волну'}</button>`;
@@ -1033,8 +1077,9 @@ function renderPeople(){
   if(!inTG){el.innerHTML='<div class="notice">Поиск людей работает внутри Telegram. Открой SAME WAVE через бота <b>@samewavebot</b>.</div>';return}
   if(!S.people.joined||P.view==='settings'){el.innerHTML=setupHTML();return}
   const unread=(P.inbox||[]).filter(r=>!r.mutual).length;
-  let html=`<div class="seg"><button data-view="feed" class="${P.view==='feed'?'on':''}">Подборка</button><button data-view="inbox" class="${P.view==='inbox'?'on':''}">Волны${unread?`<span class="badge">${unread}</span>`:''}</button><button data-view="settings">Настройки</button></div>`;
+  let html=`<div class="seg"><button data-view="feed" class="${P.view==='feed'?'on':''}">Подборка</button><button data-view="inbox" class="${P.view==='inbox'?'on':''}">Волны${unread?`<span class="badge">${unread}</span>`:''}</button><button data-view="chats" class="${P.view==='chats'?'on':''}">Чаты${P.unreadMsg?`<span class="badge">${P.unreadMsg}</span>`:''}</button><button data-view="settings" aria-label="Настройки">⚙︎</button></div>`;
   if(P.err)html+=`<div class="notice">Не получилось загрузить: ${esc(P.err)}<div class="spacer"></div><button class="btn small ghost" id="retryBtn">Повторить</button></div>`;
+  else if(P.view==='chats')html+=chatsHTML();
   else if(P.loading&&!(P.view==='feed'?P.feed:P.inbox))html+='<div class="empty">Ищем людей на твоей частоте…</div>';
   else if(P.view==='feed'){
     let rows=(P.feed||[]).filter(r=>!P.hidden.includes(String(r.tg_id)));
@@ -1059,7 +1104,7 @@ async function loadPeople(){
   try{
     const [feed,inbox]=await Promise.all([api('sw_discover',{}),api('sw_inbox',{})]);
     P.feed=feed||[];P.inbox=inbox||[];
-    const unread=P.inbox.filter(r=>!r.mutual).length;const b=$('#tabBadge');b.style.display=unread?'inline-block':'none';b.textContent=unread;
+    setTabBadge();loadChats();
   }catch(e){
     if(/no profile/.test(e.message)){try{await api('sw_save_profile',remoteArgs());return loadPeople()}catch(e2){P.err=e2.message}}
     else P.err=e.message;
@@ -1068,6 +1113,7 @@ async function loadPeople(){
 }
 function findRow(id){return (P.feed||[]).concat(P.inbox||[]).find(r=>String(r.tg_id)===String(id))}
 $('#peopleBody').addEventListener('click',async e=>{
+  const cr=e.target.closest('.crow');if(cr){openChat(cr.dataset.chat);return}
   const t=e.target.closest('button,a');if(!t)return;
   if(t.dataset.mode){S.people.mode=t.dataset.mode;if(t.dataset.mode!=='friends'&&!S.people.adult)toast('Для знакомств подтверди, что тебе есть 18');renderPeople();haptic();return}
   if(t.dataset.tg){S.people[t.dataset.tg]=!(S.people[t.dataset.tg]!==false&&S.people[t.dataset.tg]);if(t.dataset.tg==='visible'&&S.people.visible===undefined)S.people.visible=false;renderPeople();haptic();return}
@@ -1077,7 +1123,8 @@ $('#peopleBody').addEventListener('click',async e=>{
     try{await api('sw_save_profile',remoteArgs());S.people.joined=true;P.view='feed';save();toast('Готово! Ищем твоих людей');loadPeople()}
     catch(err){toast('Ошибка: '+err.message);t.disabled=false}
     return}
-  if(t.dataset.view){P.view=t.dataset.view;renderPeople();if(t.dataset.view!=='settings')loadPeople();return}
+  if(t.dataset.view){P.view=t.dataset.view;renderPeople();if(t.dataset.view==='chats')loadChats();else if(t.dataset.view!=='settings')loadPeople();return}
+  if(t.dataset.chat){openChat(t.dataset.chat);return}
   if(t.dataset.filter){P.filter=t.dataset.filter;renderPeople();return}
   if(t.id==='retryBtn'){loadPeople();return}
   if(t.id==='inviteBtn'){share();return}
@@ -1091,13 +1138,107 @@ $('#peopleBody').addEventListener('click',async e=>{
       (P.feed||[]).forEach(r=>{if(String(r.tg_id)===id)r.waved_by_me=true});
       try{TG.HapticFeedback&&TG.HapticFeedback.notificationOccurred('success')}catch(_){}
       S.stats=S.stats||{};S.stats.waves=(S.stats.waves||0)+1;if(mutual)S.stats.mutual=(S.stats.mutual||0)+1;save();
-      toast(mutual?'Взаимная волна! Контакт во вкладке «Волны»':'Волна отправлена 〰️');
-      if(mutual){P.view='inbox';loadPeople()}else renderPeople();
+      toast(mutual?'Взаимная волна! Открываю чат':'Волна отправлена 〰️');
+      if(mutual){P.view='chats';loadPeople();loadChats();setTimeout(()=>openChat(id),600)}else renderPeople();
     }catch(err){toast('Ошибка: '+err.message);t.disabled=false}
     return}
   if(t.dataset.open&&inTG){e.preventDefault();try{TG.openTelegramLink('https://t.me/'+t.dataset.open)}catch(_){location.href=t.href}}
 });
 
+/* ============ ЧАТЫ: переписка после взаимной волны ============ */
+const CH={with:null,row:null,msgs:[],last:0,timer:null,busy:false};
+function setTabBadge(){const n=(P.inbox||[]).filter(r=>!r.mutual).length+(P.unreadMsg||0);const b=$('#tabBadge');b.style.display=n?'inline-block':'none';b.textContent=n}
+async function loadChats(){if(!canNet()||!S.people.joined)return;
+  try{P.chats=await api('sw_chats',{})||[];P.chatErr='';P.unreadMsg=P.chats.reduce((s,r)=>s+(r.unread||0),0)}
+  catch(e){P.chatErr=/function|does not exist|schema cache/i.test(e.message)?'need_sql':e.message}
+  setTabBadge();if(cur==='people'&&P.view==='chats')renderPeople();}
+const hm=d=>{const x=new Date(d);return String(x.getHours()).padStart(2,'0')+':'+String(x.getMinutes()).padStart(2,'0')};
+function lastLine(r){if(!r.last_kind)return 'Взаимная волна — напиши первым';const me=r.last_mine?'Ты: ':'';
+  return me+(r.last_kind==='track'?'🎵 '+((r.last_meta||{}).t||'трек'):r.last_kind==='album'?'💿 '+((r.last_meta||{}).t||'альбом'):r.last_body)}
+function chatsHTML(){
+  if(P.chatErr==='need_sql')return '<div class="notice">Чаты почти готовы: нужно один раз выполнить SQL-миграцию <b>supabase_chat.sql</b> в Supabase.</div>';
+  if(P.chatErr)return `<div class="notice">Не получилось загрузить чаты: ${esc(P.chatErr)}</div>`;
+  if(!P.chats)return '<div class="empty">Загружаем чаты…</div>';
+  if(!P.chats.length)return '<div class="empty">Чатов пока нет. Переписка открывается после взаимной волны — так никто не пишет без согласия.</div>';
+  return '<div class="clist">'+P.chats.map(r=>{const fr=decodeProfile(r.code);const sc=fr?compare(selfAsDecoded(),fr).score:0;
+    return `<div class="crow" data-chat="${r.tg_id}"><div class="cav">${esc(((r.name||'S')[0]||'S').toUpperCase())}</div><div class="cm"><div class="ct"><b>${esc(r.name||'Слушатель')}</b><span>${r.last_at?hm(r.last_at):''}</span></div><div class="cl ${r.unread?'un':''}">${esc(lastLine(r))}</div></div>${r.unread?`<span class="badge">${r.unread}</span>`:`<span class="cpct">${sc}%</span>`}</div>`}).join('')+'</div>';
+}
+function chatRow(id){return (P.chats||[]).find(r=>String(r.tg_id)===String(id))||(P.inbox||[]).find(r=>String(r.tg_id)===String(id)&&r.mutual)}
+function icebreakers(fr){const out=[];if(!fr)return out;const c=compare(selfAsDecoded(),fr);
+  c.sharedA.slice(0,2).forEach(k=>{const a=S.albums.find(x=>albumKey(x)===k);if(a)out.push(`Как тебе «${a.t}»? У нас обоих он в любимых`)});
+  const ar=c.sharedR.map(h=>{const x=(S.artists||[]).find(x=>h36(norm(x.n),4)===h);if(x)return x.n;const a=S.albums.find(a=>h36(norm(a.a),4)===h);return a&&a.a}).filter(Boolean)[0];
+  if(ar)out.push(`Какой у тебя любимый альбом ${ar}?`);
+  out.push(`У нас ${c.score}% совпадения 〰️ Что сейчас у тебя в наушниках?`,'Какой альбом изменил твою жизнь?');return out.slice(0,4)}
+async function openChat(id){
+  const row=chatRow(id);if(!row){await loadChats();}const r=chatRow(id);if(!r){toast('Чат откроется после взаимной волны');return}
+  CH.with=String(id);CH.row=r;CH.msgs=[];CH.last=0;const sh=$('#chatSheet');lift(sh);sh.classList.add('on');haptic();
+  const fr=decodeProfile(r.code);const sc=fr?compare(selfAsDecoded(),fr).score:0;
+  $('#chatHead').innerHTML=`<button class="link" id="chatClose">←</button><div class="cav">${esc(((r.name||'S')[0]||'S').toUpperCase())}</div><div class="chn"><b>${esc(r.name||'Слушатель')}</b><small>${sc}% совпадения${fr?' · '+esc(archOf(fr)):''}</small></div><button class="dots" id="chatDots">⋯</button>
+    <div class="menu" id="chatMenu">${r.username?`<button class="btn small ghost" id="chatTg">Открыть в Telegram</button>`:''}<button class="btn small ghost" id="chatProf">Совместимость</button><button class="btn small ghost danger" id="chatReport">Пожаловаться и скрыть</button></div>`;
+  $('#chatList').innerHTML='<div class="empty">Загружаем переписку…</div>';$('#chatPick').classList.remove('on');$('#chatIn').value='';
+  await pollChat(true);clearInterval(CH.timer);CH.timer=setInterval(()=>{if(!document.hidden)pollChat()},3000);
+}
+function closeChat(){$('#chatSheet').classList.remove('on');clearInterval(CH.timer);CH.with=null;loadChats()}
+async function pollChat(first){if(!CH.with||CH.busy)return;CH.busy=true;const w=CH.with;
+  try{const rows=await api('sw_thread',{p_with:+w,p_after:CH.last})||[];if(CH.with!==w)return;
+    if(rows.length){rows.forEach(m=>{const i=CH.msgs.findIndex(x=>x.id===m.id||(x.tmp&&x.mine&&m.mine&&x.body===m.body&&x.kind===m.kind));if(i>=0)CH.msgs[i]=m;else CH.msgs.push(m)});CH.last=Math.max(CH.last,...rows.map(m=>m.id));renderChat(true)}
+    else if(first)renderChat(true);
+    const r=(P.chats||[]).find(x=>String(x.tg_id)===w);if(r&&r.unread){P.unreadMsg=Math.max(0,(P.unreadMsg||0)-r.unread);r.unread=0;setTabBadge()}}
+  catch(e){if(first)$('#chatList').innerHTML=`<div class="notice">${/locked/.test(e.message)?'Чат закрыт: волна больше не взаимная.':'Ошибка: '+esc(e.message)}</div>`}
+  finally{CH.busy=false}}
+function bubble(m){
+  const t=`<span class="mt">${hm(m.created_at||Date.now())}${m.mine?(m.tmp?' ·':m.seen?' ✓✓':' ✓'):''}</span>`;const x=m.meta||{};
+  if(m.kind==='track')return `<div class="msg ${m.mine?'me':''}"><div class="mtrk" data-mplay="${esc(x.p||'')}" data-mt="${esc(x.t||'')}" data-ma="${esc(x.ar||'')}" data-mal="${esc(x.al||'')}"><div class="mc">${x.u?`<img src="${esc(x.u)}" alt="">`:''}</div><div class="mm"><b>${esc(x.t||'Трек')}</b><small>${esc(x.ar||'')}</small></div><span class="pb">${AU.src===x.p&&!AU.paused?PAUSE_SVG:PLAY_SVG}</span></div>${m.body?`<div class="mb">${esc(m.body)}</div>`:''}${t}</div>`;
+  if(m.kind==='album')return `<div class="msg ${m.mine?'me':''}"><div class="mtrk" data-malb="1" data-mt="${esc(x.t||'')}" data-ma="${esc(x.a||'')}" data-my="${esc(x.y||'')}" data-mcid="${esc(x.cid||'')}"><div class="mc">${x.u?`<img src="${esc(x.u)}" alt="">`:''}</div><div class="mm"><b>${esc(x.t||'Альбом')}</b><small>💿 ${esc(x.a||'')}${x.y?' · '+esc(x.y):''}</small></div><span class="go">›</span></div>${m.body?`<div class="mb">${esc(m.body)}</div>`:''}${t}</div>`;
+  return `<div class="msg ${m.mine?'me':''}"><div class="mb">${esc(m.body)}</div>${t}</div>`}
+function renderChat(scroll){const el=$('#chatList');
+  if(!CH.msgs.length){const fr=CH.row&&decodeProfile(CH.row.code);
+    el.innerHTML=`<div class="chat-empty"><div class="display">〰️</div><b>Вы на одной волне</b><p class="hint">Начни с музыки — это проще, чем «привет». Выбери идею или отправь трек.</p><div class="ice">${icebreakers(fr).map(s=>`<button class="chip" data-ice="${esc(s)}">${esc(s)}</button>`).join('')}</div></div>`;return}
+  let html='',day='';CH.msgs.forEach(m=>{const d=new Date(m.created_at||Date.now()).toLocaleDateString('ru-RU',{day:'numeric',month:'long'});if(d!==day){day=d;html+=`<div class="mday">${d}</div>`}html+=bubble(m)});
+  el.innerHTML=html;if(scroll)el.scrollTop=el.scrollHeight}
+async function sendMsg(kind,body,meta){if(!CH.with)return;const w=CH.with;
+  const tmp={id:-Date.now(),tmp:1,mine:true,kind,body:body||'',meta:meta||null,created_at:new Date().toISOString()};CH.msgs.push(tmp);renderChat(true);haptic();
+  try{await api('sw_send',{p_to:+w,p_kind:kind,p_body:body||'',p_meta:meta||null});S.stats=S.stats||{};S.stats.msgs=(S.stats.msgs||0)+1;save();pollChat()}
+  catch(e){CH.msgs=CH.msgs.filter(x=>x!==tmp);renderChat();toast(/too fast/.test(e.message)?'Слишком быстро, подожди немного':/locked/.test(e.message)?'Чат закрыт':'Ошибка: '+e.message)}}
+/* выбор трека для отправки */
+function pickHTML(list){return list.map((x,i)=>`<div class="ares" data-pk="${i}"><div class="pc">${x.u?`<img src="${esc(x.u)}" alt="">`:''}</div><div style="flex:1;min-width:0"><b>${esc(x.t)}</b><small>${esc(x.ar)}${x.al?' · '+esc(x.al):''}</small></div><button class="act add" data-pksend="${i}">↑</button></div>`).join('')}
+function openPick(){const p=$('#chatPick');p.classList.toggle('on');if(!p.classList.contains('on'))return;
+  const quick=[];if(S.anthem&&S.anthem.p)quick.push({t:S.anthem.t,ar:S.anthem.ar,al:S.anthem.al,p:S.anthem.p,u:''});
+  if(PLAY.a&&PLAY.info&&PLAY.i>=0){const t=PLAY.info.tracks[PLAY.i];if(t&&t.p&&!quick.some(q=>q.p===t.p))quick.push({t:t.t,ar:PLAY.a.a,al:PLAY.a.t,p:t.p,u:t.u||''})}
+  p._list=quick;p.innerHTML=`<input id="pickQ" placeholder="Найди трек: In the End, Группа крови…" autocomplete="off"><div id="pickRes">${quick.length?'<div class="hint">Быстро отправить</div>'+pickHTML(quick):'<p class="hint">Начни вводить название трека или артиста</p>'}</div>`;$('#pickQ').focus()}
+let pickT=null;
+async function searchSongs(q){const order=isCyr(q)?['RU','US']:['US','RU'];
+  for(const cc of order){try{const j=await jget(`https://itunes.apple.com/search?entity=song&limit=12&country=${cc}&term=${encodeURIComponent(q)}`,6000);
+    const r=(j.results||[]).filter(x=>x.previewUrl).map(x=>({t:x.trackName,ar:x.artistName,al:baseTitle(x.collectionName||''),p:x.previewUrl,u:(x.artworkUrl100||'').replace(/\/\d+x\d+bb\./,'/100x100bb.')}));if(r.length)return r}catch(e){}}return []}
+
+$('#chatPick').addEventListener('input',e=>{if(e.target.id!=='pickQ')return;const q=e.target.value.trim();clearTimeout(pickT);
+  if(q.length<2)return;pickT=setTimeout(async()=>{$('#pickRes').innerHTML='<div class="skel"></div>';const r=await searchSongs(q);if($('#pickQ').value.trim()!==q)return;
+    $('#chatPick')._list=r;$('#pickRes').innerHTML=r.length?pickHTML(r):'<p class="hint">Ничего не нашлось</p>'},450)});
+$('#chatPick').addEventListener('click',e=>{const b=e.target.closest('[data-pksend]');if(!b)return;const x=$('#chatPick')._list[+b.dataset.pksend];if(!x)return;
+  $('#chatPick').classList.remove('on');sendMsg('track','',{t:x.t,ar:x.ar,al:x.al,p:x.p,u:x.u})});
+$('#chatForm').addEventListener('submit',e=>{e.preventDefault();const i=$('#chatIn');const v=i.value.trim();if(!v)return;i.value='';sendMsg('text',v.slice(0,1000),null)});
+$('#chatSheet').addEventListener('click',async e=>{
+  if(e.target.id==='chatSheet'||e.target.closest('#chatClose')){closeChat();return}
+  if(e.target.closest('#chatDots')){$('#chatMenu').classList.toggle('on');return}
+  if(e.target.closest('#chatAttach')){openPick();return}
+  const ice=e.target.closest('[data-ice]');if(ice){$('#chatIn').value=ice.dataset.ice;$('#chatIn').focus();return}
+  if(e.target.closest('#chatTg')&&CH.row&&CH.row.username){try{TG.openTelegramLink('https://t.me/'+CH.row.username)}catch(_){openLink('https://t.me/'+CH.row.username)}return}
+  if(e.target.closest('#chatProf')&&CH.row){const d=decodeProfile(CH.row.code);if(d){d.name=CH.row.name;closeChat();stack=[];show('match',false);showMatch(d)}return}
+  if(e.target.closest('#chatReport')&&CH.with){const id=CH.with;try{await api('sw_report',{p_to:+id,p_reason:'chat_report'});P.hidden.push(id);closeChat();toast('Жалоба отправлена, чат скрыт')}catch(err){toast('Ошибка: '+err.message)}return}
+  const mp=e.target.closest('[data-mplay]');if(mp&&mp.dataset.mplay){const p=mp.dataset.mplay;
+    if(AU.src===p){if(AU.paused)AU.play().catch(()=>{});else AU.pause();setTimeout(()=>renderChat(),50);return}
+    try{anthemAU.pause()}catch(_){}PLAY={a:{t:mp.dataset.mal||mp.dataset.mt,a:mp.dataset.ma},info:{tracks:[{t:mp.dataset.mt,p}]},i:0,src:'chat'};AU.src=p;AU.play().catch(()=>toast('Не удалось включить превью'));setTimeout(()=>renderChat(),50);return}
+  const ma=e.target.closest('[data-malb]');if(ma){openAlbum({t:ma.dataset.mt,a:ma.dataset.ma,y:+ma.dataset.my||null,cid:+ma.dataset.mcid||undefined});return}
+});
+setTimeout(()=>{AU.addEventListener('pause',()=>{if(CH.with)renderChat()});AU.addEventListener('ended',()=>{if(CH.with)renderChat()})},0);
+/* отправить альбом другу */
+async function shareAlbumTo(){const a=ALB.a;if(!a)return;if(!canNet()||!S.people.joined){toast('Сначала открой «Люди» и найди своих');return}
+  if(!P.chats)await loadChats();const list=(P.chats||[]);if(!list.length){toast('Нет чатов: нужна взаимная волна');return}
+  $('#albMine').insertAdjacentHTML('beforebegin',`<div class="sendto" id="sendTo"><div class="hint">Кому отправить «${esc(a.t)}»?</div>${list.slice(0,12).map(r=>`<button class="chip" data-sendto="${r.tg_id}">${esc(r.name||'Слушатель')}</button>`).join('')}</div>`)}
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-sendto]');if(!b)return;const a=ALB.a;if(!a)return;
+  const u=(ALB.info&&ALB.info.art)||catCover(a)||COVERS[covId(a)]||'';const meta={t:a.t,a:a.a,y:a.y||null,cid:a.cid||null,u:u&&u!=='-'?u.replace(/\/\d+x\d+bb\./,'/100x100bb.'):''};
+  b.disabled=true;try{await api('sw_send',{p_to:+b.dataset.sendto,p_kind:'album',p_body:'',p_meta:meta});toast('Отправлено 💿');const s=$('#sendTo');if(s)s.remove()}catch(err){toast('Ошибка: '+err.message);b.disabled=false}});
+setInterval(()=>{if(!document.hidden&&canNet()&&S.people&&S.people.joined&&!CH.with)api('sw_unread',{}).then(n=>{if(typeof n==='number'&&n!==P.unreadMsg){P.unreadMsg=n;setTabBadge();if(cur==='people'&&P.view==='chats')loadChats()}}).catch(()=>{})},30000);
 
 /* ============ STORY CARD ============ */
 let LAST_MATCH=null,STORY={blob:null,url:null,kind:null};
@@ -1280,21 +1421,21 @@ async function openAlbum(a){
 function plural(n,a,b,c){const m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<12||h>14)?b:c}
 function renderAlbActs(){
   const a=ALB.a;if(!a)return;const inFav=S.albums.some(x=>albumKey(x)===albumKey(a));const r=(S.rated||{})[albumKey(a)];
-  const here=PLAY.src!=='art'&&sameA(PLAY.a,a)&&PLAY.i>=0;const tr=here?PLAY.info.tracks[PLAY.i]:null;
-  $('#albActs').innerHTML=`<button class="btn ${inFav?'ghost':''}" id="albFav">${inFav?'В любимых ✓':'+ В любимые'}</button><button class="btn ghost" id="albRate">${r&&r.r?'Моя оценка: '+r.r:'Оценить'}</button><button class="btn ghost" id="albYa">Яндекс Музыка</button>${tr?`<button class="btn ghost" id="albAnthem">${S.anthem&&S.anthem.p===tr.p?'★ Гимн профиля':'☆ Сделать гимном'}</button>`:''}`;
+  const here=!PLAY.src&&sameA(PLAY.a,a)&&PLAY.i>=0;const tr=here?PLAY.info.tracks[PLAY.i]:null;
+  $('#albActs').innerHTML=`<button class="btn ${inFav?'ghost':''}" id="albFav">${inFav?'В любимых ✓':'+ В любимые'}</button><button class="btn ghost" id="albRate">${r&&r.r?'Моя оценка: '+r.r:'Оценить'}</button><button class="btn ghost" id="albYa">Яндекс Музыка</button><button class="btn ghost" id="albSend">Отправить</button>${tr?`<button class="btn ghost" id="albAnthem">${S.anthem&&S.anthem.p===tr.p?'★ Гимн профиля':'☆ Сделать гимном'}</button>`:''}`;
   const p=r&&passOf(r.st);
   $('#albMine').innerHTML=r&&r.r?`<div class="mine"><div class="mh"><b class="display">${r.r}/10</b><span>${p?p[1]+' '+p[2]:RATE_WORDS[r.r]}</span></div>${r.rv?`<div class="mr">«${esc(r.rv)}»</div>`:'<div class="mr empty">Добавь пару слов о альбоме — нажми «Моя оценка».</div>'}</div>`:'';
 }
 function playTrack(i){
   const info=ALB.info;if(!info)return;const t=info.tracks[i];if(!t||!t.p)return;
-  if(PLAY.src!=='art'&&sameA(PLAY.a,ALB.a)&&PLAY.i===i){if(AU.paused)AU.play().catch(()=>{});else AU.pause();return}
+  if(!PLAY.src&&sameA(PLAY.a,ALB.a)&&PLAY.i===i){if(AU.paused)AU.play().catch(()=>{});else AU.pause();return}
   try{anthemAU.pause()}catch(e){}
   PLAY={a:ALB.a,info,i};AU.src=t.p;AU.play().catch(()=>toast('Не удалось включить превью'));
   if(ALB.vids)setBgVideo(pickVideo(ALB.vids,info,t.t));
 }
 function stopTrack(){try{AU.pause()}catch(e){}PLAY={a:null,info:null,i:-1};syncTrk()}
 function syncTrk(){
-  const here=PLAY.src!=='art'&&sameA(PLAY.a,ALB.a),playing=!AU.paused&&PLAY.i>=0;
+  const here=!PLAY.src&&sameA(PLAY.a,ALB.a),playing=!AU.paused&&PLAY.i>=0;
   $('#albHero').classList.toggle('playing',here&&playing);
   document.querySelectorAll('#albTracks .trk').forEach(el=>{const on=here&&+el.dataset.i===PLAY.i;el.classList.toggle('on',on);el.classList.toggle('play',on&&playing);
     const pb=el.querySelector('.pb');if(pb&&ALB.info&&ALB.info.tracks[+el.dataset.i]&&ALB.info.tracks[+el.dataset.i].p)pb.innerHTML=on&&playing?PAUSE_SVG:PLAY_SVG;if(!on)el.querySelector('.prog').style.width='0'});
@@ -1316,7 +1457,7 @@ AU.addEventListener('timeupdate',()=>{if(!AU.duration)return;const p=(AU.current
   if(PLAY.src==='art'){const el=document.querySelector(`#artTop .trk[data-i="${PLAY.i}"] .prog`);if(el)el.style.width=p}
   else if(sameA(PLAY.a,ALB.a)){const el=document.querySelector(`#albTracks .trk[data-i="${PLAY.i}"] .prog`);if(el)el.style.width=p}});
 AU.addEventListener('ended',()=>{const tr=PLAY.info&&PLAY.info.tracks;if(!tr)return;let j=PLAY.i+1;while(j<tr.length&&!tr[j].p)j++;
-  if(j<tr.length){PLAY.i=j;if(tr[j].al)PLAY.a=tr[j].al;AU.src=tr[j].p;AU.play().catch(()=>{});if(PLAY.src!=='art'&&sameA(PLAY.a,ALB.a)&&ALB.vids)setBgVideo(pickVideo(ALB.vids,ALB.info,tr[j].t))}else{PLAY.i=-1;syncTrk()}});
+  if(j<tr.length){PLAY.i=j;if(tr[j].al)PLAY.a=tr[j].al;AU.src=tr[j].p;AU.play().catch(()=>{});if(!PLAY.src&&sameA(PLAY.a,ALB.a)&&ALB.vids)setBgVideo(pickVideo(ALB.vids,ALB.info,tr[j].t))}else{PLAY.i=-1;syncTrk()}});
 $('#albTracks').addEventListener('click',e=>{const r=e.target.closest('.trk');if(!r||r.classList.contains('na'))return;haptic();playTrack(+r.dataset.i)});
 function closeAlbum(){$('#albSheet').classList.remove('on');setBgVideo(null);ALB={a:null,info:null};if($('#artSheet').classList.contains('on')&&!S.vidOff){try{$('#artVid').play().catch(()=>{})}catch(e){}}renderMini()}
 $('#albClose').onclick=closeAlbum;
@@ -1335,6 +1476,7 @@ $('#albActs').addEventListener('click',e=>{const b=e.target.closest('button');if
     save();renderAlbActs();if(['albums','library','wave'].includes(cur))render(cur);return}
   if(b.id==='albRate'){closeAlbum();const ex=(S.rated||{})[albumKey(a)];R={cur:Object.assign({},a),val:ex&&ex.r||0,done:!!(ex&&ex.r)};stack=[cur];show('rate',false);renderRate();return}
   if(b.id==='albAnthem'){const t=PLAY.info.tracks[PLAY.i];S.anthem={t:t.t,p:t.p,al:a.t,ar:a.a,y:a.y||null,c:a.c};save();renderAlbActs();toast('Гимн профиля: '+t.t);haptic();return}
+  if(b.id==='albSend'){if($('#sendTo'))$('#sendTo').remove();else shareAlbumTo();return}
   if(b.id==='albYa'){openLink('https://music.yandex.ru/search?text='+encodeURIComponent(a.a+' '+a.t));return}
 });
 /* ============ СТРАНИЦА ИСПОЛНИТЕЛЯ: дискография, популярное, факты ============ */
@@ -1499,6 +1641,7 @@ const ACH=[
   ['anthem','⭐','Свой гимн','Выбрал трек-гимн',s=>!!s.anthem],
   ['review','✒️','Рецензент','Написал 3 рецензии',s=>Object.values(s.rated||{}).filter(v=>v&&v.rv&&v.rv.length>=20).length>=3],
   ['fans','🎤','Фанат','5 любимых артистов',s=>(s.artists||[]).length>=5],
+  ['talk','💬','Разговорчивый','10 сообщений',s=>(s.stats&&s.stats.msgs||0)>=10],
   ['wave','〰️','Первая волна','Отправил волну',s=>(s.stats&&s.stats.waves||0)>=1],
   ['mutual','🤝','На одной волне','Взаимная волна',s=>(s.stats&&s.stats.mutual||0)>=1],
 ];
@@ -1782,8 +1925,10 @@ function boot(){
   cloudLoad(()=>{applyMotion();
     const sp=inTG&&TG.initDataUnsafe&&TG.initDataUnsafe.start_param;
     const hashCode=(location.hash.match(/^#c-([A-Za-z0-9_-]+)/)||[])[1];
-    const fr=sp?decodeProfile(sp):hashCode?decodeProfile(hashCode):null;
-    if(S.done){show(fr?'match':'wave',false);if(fr)showMatch(fr);loadPeople()}
+    const fr=sp&&!/^(chat_|waves)/.test(sp)?decodeProfile(sp):hashCode?decodeProfile(hashCode):null;
+    if(S.done){show(fr?'match':'wave',false);if(fr)showMatch(fr);loadPeople();
+      if(sp&&/^chat_\d+$/.test(sp)){stack=[];show('people',false);P.view='chats';setTimeout(()=>openChat(sp.slice(5)),300)}
+      else if(sp==='waves'){stack=[];show('people',false);P.view='inbox'}}
     else{pendingFriend=fr;show('welcome',false);
       if(fr){$('#startBtn').textContent=(fr.name?fr.name+' зовёт сравнить волны':'Тебя зовут сравнить волны')+' →'}}
   });
