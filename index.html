@@ -127,7 +127,7 @@ body.m-g .hudring .r2{animation:spin 5s linear infinite reverse;transform-origin
 /* ===== Сторис ===== */
 .sheet{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center}
 .sheet.on{display:flex}
-.sheet-in{width:100%;max-width:520px;max-height:100vh;overflow:auto;background:#0b0b0b;border:1px solid #222;border-bottom:0;border-radius:22px 22px 0 0;padding:16px 18px calc(18px + var(--safe-b));animation:sheetup .35s cubic-bezier(.2,.8,.2,1)}
+.sheet-in{width:100%;max-width:520px;max-height:calc(100vh - var(--safe-t));overflow:auto;background:#0b0b0b;border:1px solid #222;border-bottom:0;border-radius:22px 22px 0 0;padding:16px 18px calc(18px + var(--safe-b));animation:sheetup .35s cubic-bezier(.2,.8,.2,1)}
 @keyframes sheetup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .sheet-img{margin:12px auto 14px;width:min(62vw,300px);aspect-ratio:9/16;border-radius:14px;overflow:hidden;border:1px solid #222;display:flex;align-items:center;justify-content:center}
 .sheet-img img{width:100%;height:100%;object-fit:cover;display:block}
@@ -291,7 +291,7 @@ textarea.rev:focus{border-color:#555}
 .cm{flex:1;min-width:0}.ct{display:flex;justify-content:space-between;gap:8px}.ct span{font-size:12px;color:var(--muted)}
 .cl{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.cl.un{color:var(--fg);font-weight:600}
 .cpct{font-size:12px;color:var(--silver);font-family:Michroma,Manrope,sans-serif}
-.chat-in{height:100vh;height:100dvh;max-height:none;border-radius:0;display:flex;flex-direction:column;padding:0;overflow:hidden}
+.chat-in{height:100vh;height:100dvh;max-height:none;border-radius:0;display:flex;flex-direction:column;padding:var(--safe-t) 0 0;overflow:hidden}
 .chat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #1c1c1c;position:relative}
 .chat-head .link{font-size:22px;text-decoration:none;padding:4px 8px 4px 0}.chat-head .cav{width:38px;height:38px;font-size:15px}
 .chn{flex:1;min-width:0}.chn b{display:block}.chn small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -393,6 +393,11 @@ p.sub{color:var(--muted);margin:0 0 18px}
 .count{font-size:13px;color:var(--muted);margin:14px 0 8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
 .dna{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,#1b1b1b 0%,#050505 70%);border:1px solid #222;border-radius:24px;padding:20px 18px 18px}
+/* Music DNA без рамки: карточка растворяется в фоне */
+#dnaCard.dna{background:none;border:0;border-radius:0;overflow:visible;box-shadow:none!important}
+#dnaCard.dna::after{content:'';position:absolute;left:-18px;right:-18px;top:-40px;height:340px;z-index:-1;pointer-events:none;background:radial-gradient(60% 55% at 50% 40%,rgba(255,255,255,.07),transparent 70%)}
+#dnaCard.beam::before{display:none}
+#dnaCard{isolation:isolate}
 .dna .brand{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);letter-spacing:.25em}
 .dna svg.sp{display:block;width:100%;height:auto;margin:10px 0 6px}
 .dna .who{font-size:13px;color:var(--muted)}
@@ -404,17 +409,17 @@ p.sub{color:var(--muted);margin:0 0 18px}
 .stats b{display:block;font-size:18px}
 .stats span{font-size:11px;color:var(--muted)}
 /* карточка Music DNA: симметрия, центр, минимум */
-#dnaCard{text-align:center;padding:22px 18px 22px}
+#dnaCard{text-align:center;padding:14px 0 18px}
 #dnaCard .brand{justify-content:center}
-#dnaCard svg.sp{margin:18px -18px 14px;width:calc(100% + 36px);-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+#dnaCard svg.sp{margin:18px -18px 14px;width:calc(100% + 36px);max-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
 #dnaCard .who{font-size:13px;color:var(--muted);margin-bottom:2px}
 #dnaCard .arch{font-size:21px;margin:2px 0 14px}
 #dnaCard .tags{justify-content:center}
 #dnaCard .tags span{border-color:#2a2a2a}
 #dnaCard .covrow{justify-content:center;gap:8px;margin-top:18px}
 #dnaCard .covrow .cov{flex:0 0 calc((100% - 32px)/5);max-width:none;border-radius:6px}
-#dnaCard .stats2{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px;padding-top:16px;border-top:1px solid #1d1d1d}
-#dnaCard .stats2 div+div{border-left:1px solid #1d1d1d}
+#dnaCard .stats2{display:grid;grid-template-columns:repeat(3,1fr);margin-top:22px;padding-top:0;border-top:0}
+#dnaCard .stats2 div+div{border-left:0}
 #dnaCard .stats2 b{display:block;font-size:18px;font-weight:700}
 #dnaCard .stats2 span{font-size:11px;color:var(--muted)}
 .tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);border-top:1px solid #1a1a1a;padding:8px 10px calc(8px + var(--safe-b));z-index:6;display:none}
@@ -581,6 +586,7 @@ p.sub{color:var(--muted);margin:0 0 18px}
     <h2>Профиль</h2>
     <div class="row"><button class="btn ghost small" id="editGenres">Жанры</button><button class="btn ghost small" id="editMoods">Настроения</button></div>
     <div class="spacer"></div>
+    <button class="link" id="fsBtn">Полный экран: вкл</button>
     <button class="link danger" id="resetBtn">Сбросить профиль</button>
     <div id="resetConfirm" style="display:none" class="card">
       <b>Удалить профиль?</b><p class="sub" style="margin:6px 0 12px">Альбомы, оценки и волна будут стёрты.</p>
@@ -1763,6 +1769,8 @@ $('#compareBtn').onclick=()=>{const fr=decodeProfile($('#friendCode').value);if(
 $('#demoBtn').onclick=()=>showMatch(demoProfile());
 $('#addMoreBtn').onclick=()=>{$('#q').value='';show('albums')};
 $('#editGenres').onclick=()=>show('genres');$('#editMoods').onclick=()=>show('moods');
+$('#fsBtn').onclick=()=>{S.noFull=!S.noFull;save();$('#fsBtn').textContent=S.noFull?'Полный экран: выкл':'Полный экран: вкл';
+  try{if(S.noFull&&TG&&TG.isFullscreen)TG.exitFullscreen();else if(!S.noFull&&TG&&TG.requestFullscreen&&TG.isVersionAtLeast('8.0'))TG.requestFullscreen()}catch(e){}haptic()};
 $('#resetBtn').onclick=()=>$('#resetConfirm').style.display='block';
 $('#resetNo').onclick=()=>$('#resetConfirm').style.display='none';
 $('#resetYes').onclick=()=>{if(S.people&&S.people.joined&&canNet())api('sw_delete_me',{}).catch(()=>{});S={name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:S.motion||'b',status:'',anthem:null,listen:null,stats:{plays:0,waves:0,mutual:0},ach:[],artists:[],people:{joined:false,mode:'friends',adult:false,visible:true}};save();stack=[];show('welcome',false)};
@@ -1917,11 +1925,21 @@ $('#ratedWrap').addEventListener('click',e=>{const f=e.target.closest('[data-pf]
 $('#rateCta').onclick=()=>{R.cur=null;stack=['wave'];show('rate',false)};
 $('#rateBack').onclick=()=>{stack=[];show('wave',false)};
 
+/* ============ ПОЛНЫЙ ЭКРАН (Telegram 8.0+) ============ */
+function applySafe(){if(!TG)return;const sa=TG.safeAreaInset||{},ca=TG.contentSafeAreaInset||{};const r=document.documentElement.style;
+  if(TG.isFullscreen){r.setProperty('--safe-t',((sa.top||0)+(ca.top||0))+'px');r.setProperty('--safe-b',Math.max(sa.bottom||0,ca.bottom||0)+'px');document.body.classList.add('fs')}
+  else{r.removeProperty('--safe-t');r.removeProperty('--safe-b');document.body.classList.remove('fs')}}
+function goFullscreen(){if(!TG||!TG.isVersionAtLeast)return;
+  ['fullscreenChanged','safeAreaChanged','contentSafeAreaChanged','viewportChanged'].forEach(ev=>{try{TG.onEvent(ev,applySafe)}catch(e){}});
+  if(TG.isVersionAtLeast('7.7')&&TG.disableVerticalSwipes)TG.disableVerticalSwipes();
+  const mobile=/^(ios|android)/.test(TG.platform||'');
+  if(mobile&&!S.noFull&&TG.isVersionAtLeast('8.0')&&TG.requestFullscreen&&!TG.isFullscreen)TG.requestFullscreen();
+  applySafe()}
 /* ============ BOOT ============ */
 let pendingFriend=null;
 function boot(){
   if(TG){try{TG.ready();TG.expand();TG.setHeaderColor&&TG.setHeaderColor('#000000');TG.setBackgroundColor&&TG.setBackgroundColor('#000000');TG.BackButton&&TG.BackButton.onClick(back)}catch(e){}}
-  load();setTimeout(()=>{if(S.motion==='f')startBoil();$('#albVidBtn').textContent=S.vidOff?'Видео: выкл':'Видео: вкл'},0);S.rated=S.rated||{};S.motion=(location.search.match(/motion=([a-g])/)||[])[1]||S.motion||'b';applyMotion();
+  load();try{goFullscreen()}catch(e){}setTimeout(()=>{if(S.motion==='f')startBoil();$('#fsBtn').textContent=S.noFull?'Полный экран: выкл':'Полный экран: вкл';$('#albVidBtn').textContent=S.vidOff?'Видео: выкл':'Видео: вкл'},0);S.rated=S.rated||{};S.motion=(location.search.match(/motion=([a-g])/)||[])[1]||S.motion||'b';applyMotion();
   cloudLoad(()=>{applyMotion();
     const sp=inTG&&TG.initDataUnsafe&&TG.initDataUnsafe.start_param;
     const hashCode=(location.hash.match(/^#c-([A-Za-z0-9_-]+)/)||[])[1];
