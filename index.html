@@ -1059,14 +1059,15 @@ $('#storyBtn').onclick=()=>openStory('dna');
 
 
 /* ============ ALBUM SHEET: треклист и превью ============ */
-const ALB_KEY='sw_albinfo_v1';let ALBINFO={};try{ALBINFO=JSON.parse(localStorage.getItem(ALB_KEY)||'{}')}catch(e){}
+const ALB_KEY='sw_albinfo_v2';let ALBINFO={};try{ALBINFO=JSON.parse(localStorage.getItem(ALB_KEY)||'{}')}catch(e){}
 function saveAlbInfo(){try{localStorage.setItem(ALB_KEY,JSON.stringify(ALBINFO))}catch(e){}}
 function pickBest(res,a){
   const nt=norm(a.t),na=norm(a.a);
   const sc=r=>{const ct=norm(r.collectionName||''),ca=norm(r.artistName||'');let s=0;
     if(ca===na)s+=3;else if(ca.includes(na)||na.includes(ca))s+=2;
     if(ct===nt)s+=3;else if((nt.length>3&&ct.startsWith(nt+' '))||(ct.length>3&&nt.startsWith(ct+' ')))s+=2;return s};
-  const best=res.map(r=>[sc(r),r]).filter(x=>x[0]>=4).sort((x,y)=>y[0]-x[0]||(y[1].trackCount||0)-(x[1].trackCount||0))[0];
+  const adj=r=>{let s=sc(r);const ry=+(r.releaseDate||'').slice(0,4);if(a.y&&ry&&Math.abs(ry-a.y)>1)s-=1.5;if((r.trackCount||0)<5)s-=1.5;return s};
+  const best=res.map(r=>[sc(r)>=4?adj(r):0,r]).filter(x=>x[0]>=3.5).sort((x,y)=>y[0]-x[0]||(y[1].trackCount||0)-(x[1].trackCount||0))[0];
   return best?best[1]:null;
 }
 async function itLookup(cid,country){
