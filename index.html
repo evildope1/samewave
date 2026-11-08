@@ -77,7 +77,7 @@ p.sub{color:var(--muted);margin:0 0 18px}
 .tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);border-top:1px solid #1a1a1a;padding:8px 10px calc(8px + var(--safe-b));z-index:6;display:none}
 .tabs.on{display:block}
 .tabs .inner{max-width:520px;margin:0 auto;display:flex}
-.tabs button{flex:1;padding:6px 0;color:var(--muted);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button{position:relative;flex:1;padding:6px 0;color:var(--muted);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
 .tabs button.on{color:var(--fg)}
 .tabs svg{width:22px;height:22px}
 .code{font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all;color:var(--silver);background:#0a0a0a;border:1px dashed #333;border-radius:12px;padding:12px;margin:10px 0}
@@ -101,6 +101,29 @@ p.sub{color:var(--muted);margin:0 0 18px}
 .manual.on{display:flex}
 .empty{color:var(--muted);text-align:center;padding:16px;font-size:14px}
 .spacer{height:12px}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px;margin-bottom:14px}
+.seg button{flex:1;padding:9px;border-radius:9px;font-weight:700;font-size:14px;color:var(--muted)}
+.seg button.on{background:var(--card2);color:var(--fg)}
+.tabs .badge{position:absolute;top:0;left:calc(50% + 6px);margin:0}
+.badge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:var(--fg);color:#000;font-size:11px;margin-left:4px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px}
+.pcard.twin{border-color:#777;background:radial-gradient(120% 80% at 50% 0%,#1d1d1d,#0b0b0b)}
+.pcard .twinlbl{font-size:10px;letter-spacing:.25em;color:var(--silver);margin-bottom:4px}
+.pcard svg.sp{height:54px;width:100%;margin:2px 0 8px}
+.pcard .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pcard .nm{font-weight:800;font-size:17px}
+.pcard .pct{font-size:22px}
+.pcard .ar{color:var(--muted);font-size:13px;margin:2px 0 10px}
+.pcard .acts{display:flex;gap:8px;margin-top:12px}
+.pcard .acts .btn{padding:11px;font-size:14px;border-radius:12px;white-space:nowrap}
+.pcard .acts .dots{flex:none;width:44px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-weight:800}
+.pcard .menu{display:none;gap:8px;margin-top:8px}.pcard .menu.on{display:flex}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.toggle:first-of-type{border-top:0}
+.sw{width:46px;height:28px;border-radius:14px;background:#333;position:relative;flex:none;transition:background .2s}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s}
+.sw.on{background:#f2f2f2}.sw.on::after{left:21px;background:#000}
+.notice{background:var(--card);border:1px dashed #333;border-radius:16px;padding:16px;color:var(--silver);font-size:14px}
 </style>
 </head>
 <body>
@@ -160,6 +183,8 @@ p.sub{color:var(--muted);margin:0 0 18px}
       <button class="btn" id="shareBtn">Поделиться волной</button>
     </div>
     <div class="spacer"></div>
+    <button class="btn ghost" id="toPeopleBtn">Найти людей на моей волне</button>
+    <div class="spacer"></div>
     <button class="btn ghost" id="toMatchBtn">Сравнить с другом</button>
   </section>
 
@@ -178,6 +203,12 @@ p.sub{color:var(--muted);margin:0 0 18px}
     <div class="row"><button class="btn" id="compareBtn">Сравнить</button></div>
     <button class="link" id="demoBtn">Попробовать на демо-профиле</button>
     <div id="matchResult"></div>
+  </section>
+
+  <!-- 7. People -->
+  <section class="screen" id="s-people">
+    <h1>Люди на твоей волне</h1>
+    <div id="peopleBody"></div>
   </section>
 
   <!-- 6. Library -->
@@ -202,6 +233,7 @@ p.sub{color:var(--muted);margin:0 0 18px}
 
 <nav class="tabs" id="tabs"><div class="inner">
   <button data-tab="wave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12c2 0 2-6 4-6s2 12 4 12 2-14 4-14 2 10 4 10 2-4 4-4"/></svg>Моя волна</button>
+  <button data-tab="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14c3 0 5.5 1.8 5.5 4.6"/></svg>Люди<span class="badge" id="tabBadge" style="display:none"></span></button>
   <button data-tab="match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>Совместимость</button>
   <button data-tab="library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>Альбомы</button>
 </div></nav>
@@ -210,7 +242,10 @@ p.sub{color:var(--muted);margin:0 0 18px}
 <script>
 /* ============ CONFIG ============ */
 // После создания бота и Mini App в @BotFather впиши сюда ссылку вида https://t.me/<bot>/<app>
-const APP_LINK = 'https://t.me/samewave_bot/app';
+const APP_LINK = 'https://t.me/samewavebot/app';
+// Supabase → Project Settings → API: Project URL и anon/publishable key (ключ публичный, его можно хранить в приложении)
+const SUPABASE_URL = '';
+const SUPABASE_KEY = '';
 const USE_MUSICBRAINZ = true; // поиск по MusicBrainz, если сеть доступна (в Telegram — да)
 
 /* ============ DATA ============ */
@@ -295,9 +330,9 @@ function cover(a){ // сгенерированная обложка, без за
 
 /* ============ STATE ============ */
 const KEY='samewave_profile_v1';
-let S = {name:'',genres:[],moods:[],albums:[],done:false};
+let S = {name:'',genres:[],moods:[],albums:[],done:false,people:{joined:false,mode:'friends',adult:false,visible:true}};
 function load(){try{const v=localStorage.getItem(KEY);if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}}
-function save(){const v=JSON.stringify(S);try{localStorage.setItem(KEY,v)}catch(e){}
+function save(){S.people=S.people||{joined:false,mode:'friends',adult:false,visible:true};if(S.done&&S.people.joined)syncSoon();const v=JSON.stringify(S);try{localStorage.setItem(KEY,v)}catch(e){}
   try{if(inTG&&TG.CloudStorage)TG.CloudStorage.setItem(KEY,v)}catch(e){}}
 function cloudLoad(cb){try{if(inTG&&TG.CloudStorage&&TG.isVersionAtLeast&&TG.isVersionAtLeast('6.9')){TG.CloudStorage.getItem(KEY,(err,v)=>{if(!err&&v){try{S=Object.assign(S,JSON.parse(v))}catch(e){}}cb()});return}}catch(e){}cb()}
 
@@ -389,7 +424,7 @@ function show(id,push=true){
   if(push&&cur!==id)stack.push(cur);cur=id;
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+id));
   const onb=['genres','moods','albums'].includes(id)&&!S.done;
-  const tab=['wave','match','library'].includes(id)||(id==='albums'&&S.done);
+  const tab=['wave','people','match','library'].includes(id)||(id==='albums'&&S.done);
   $('#tabs').classList.toggle('on',tab&&id!=='albums');
   $('#sticky').style.display=(onb||(id==='albums'&&S.done))?'block':'none';
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
@@ -460,6 +495,7 @@ function render(id){
       <div class="stats"><div><b>${d.count}</b><span>альбомов</span></div><div><b>${d.era}</b><span>главная эпоха</span></div><div><b>${d.avg}</b><span>средняя оценка</span></div></div>`;
   }
   if(id==='match'){$('#myCode').textContent=encodeProfile(S)}
+  if(id==='people'){renderPeople()}
   if(id==='library'){drawMine($('#libAlbums'));$('#resetConfirm').style.display='none'}
   updateNext();
 }
@@ -499,6 +535,134 @@ function demoProfile(){
   return decodeProfile(encodeProfile({name:'Демо',genres:['alt','postpunk','electronic','indie'],moods:['mel','atm','dark'],albums:al}));
 }
 
+
+/* ============ PEOPLE (Supabase) ============ */
+function canNet(){return !!(SUPABASE_URL&&SUPABASE_KEY&&inTG&&TG.initData)}
+async function api(fn,args){
+  const h={'Content-Type':'application/json','apikey':SUPABASE_KEY};
+  if(SUPABASE_KEY.startsWith('eyJ'))h.Authorization='Bearer '+SUPABASE_KEY;
+  const res=await fetch(SUPABASE_URL.replace(/\/$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:h,body:JSON.stringify(Object.assign({init_data:TG.initData},args))});
+  const txt=await res.text();let j=null;try{j=txt?JSON.parse(txt):null}catch(e){}
+  if(!res.ok)throw new Error((j&&j.message)||('HTTP '+res.status));
+  return j;
+}
+function remoteArgs(){
+  const p=S.people;
+  return {p_code:encodeProfile(S),p_genres:S.genres,p_albums:S.albums.slice(0,30).map(albumKey),p_mode:p.mode,p_adult:!!p.adult,p_visible:p.visible!==false};
+}
+let syncT=null;
+function syncSoon(){if(!canNet())return;clearTimeout(syncT);syncT=setTimeout(()=>api('sw_save_profile',remoteArgs()).catch(e=>console.warn('sync',e)),1500)}
+const MODE_LBL={friends:'ищет друзей',dating:'ищет знакомства',both:'друзья и знакомства'};
+let P={view:'feed',feed:null,inbox:null,loading:false,err:'',filter:'all',hidden:[]};
+function archOf(d){const m=MOODS.find(x=>x[0]===d.moods[0]);return (m?m[2]:'Curious')+' '+(ROLE[d.genres[0]]||'Listener')}
+function personCard(row,opts={}){
+  const fr=decodeProfile(row.code);if(!fr)return '';
+  fr.name=row.name||fr.name;
+  const c=compare(selfAsDecoded(),fr);
+  const shared=c.sharedA.map(k=>S.albums.find(a=>albumKey(a)===k)).filter(Boolean).slice(0,3);
+  const id=String(row.tg_id);
+  let acts='';
+  if(opts.inbox){
+    acts=row.mutual
+      ?(row.username?`<a class="btn" href="https://t.me/${esc(row.username)}" data-open="${esc(row.username)}">Написать в Telegram</a>`:`<div class="hint">У пользователя нет username — попроси его добавить в настройках Telegram.</div>`)
+      :`<button class="btn" data-wave="${id}">Ответить волной</button>`;
+  }else{
+    acts=row.waved_by_me?`<button class="btn ghost" disabled>Волна отправлена</button>`:`<button class="btn" data-wave="${id}">${row.waved_me?'Ответить волной':'Отправить волну'}</button>`;
+  }
+  return `<div class="pcard ${opts.twin?'twin':''}" data-card="${id}">
+    ${opts.twin?'<div class="twinlbl display">MUSIC TWIN · ТВОЙ ДВОЙНИК</div>':''}
+    ${soundprint(row.code).replace('class="sp"','class="sp" preserveAspectRatio="none"')}
+    <div class="top"><span class="nm">${esc(fr.name||'Слушатель')}</span><span class="pct display">${c.score}%</span></div>
+    <div class="ar">${esc(archOf(fr))}${MODE_LBL[row.mode]?' · '+MODE_LBL[row.mode]:''}${row.waved_me&&!opts.inbox?' · <b style="color:var(--fg)">прислал(а) тебе волну</b>':''}</div>
+    ${shared.length?`<div class="tags">${shared.map(a=>`<span>${esc(a.t)}</span>`).join('')}</div>`:`<div class="tags">${fr.genres.slice(0,3).map(g=>`<span>${esc((GENRES.find(x=>x[0]===g)||[0,0,g])[2])}</span>`).join('')}</div>`}
+    <div class="acts">${acts}<button class="btn ghost" data-more="${id}" style="flex:0 0 auto;width:auto;padding:11px 14px">Подробнее</button><button class="dots" data-dots="${id}">⋯</button></div>
+    <div class="menu" data-menu="${id}"><button class="btn small ghost" data-hide="${id}">Скрыть</button><button class="btn small ghost danger" data-report="${id}">Пожаловаться</button></div>
+  </div>`;
+}
+function setupHTML(){
+  const p=S.people;
+  return `<p class="sub">Покажи свою волну другим и находи людей с похожим вкусом. Контакт открывается, только когда вы оба отправили друг другу волну.</p>
+  <div class="card">
+    <b>Кого ищешь?</b><div class="spacer"></div>
+    <div class="chips" id="modeChips">${[['friends','Друзей'],['dating','Знакомства'],['both','И то, и другое']].map(([k,l])=>`<button class="chip ${p.mode===k?'on':''}" data-mode="${k}">${l}</button>`).join('')}</div>
+    <div class="spacer"></div>
+    <div class="toggle"><span>Мне есть 18 лет<br><small class="hint" style="margin:0">Обязательно для знакомств</small></span><button class="sw ${p.adult?'on':''}" data-tg="adult"></button></div>
+    <div class="toggle"><span>Показывать меня в поиске</span><button class="sw ${p.visible!==false?'on':''}" data-tg="visible"></button></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" id="joinBtn">${p.joined?'Сохранить':'Найти людей'}</button>
+  <p class="hint">Другие увидят твоё имя из Telegram, Music DNA и альбомы. Username — только при взаимной волне.</p>`;
+}
+function renderPeople(){
+  const el=$('#peopleBody');
+  if(!SUPABASE_URL||!SUPABASE_KEY){el.innerHTML='<div class="notice">Поиск людей скоро откроется. А пока сравнивайся с друзьями во вкладке «Совместимость».</div>';return}
+  if(!inTG){el.innerHTML='<div class="notice">Поиск людей работает внутри Telegram. Открой SAME WAVE через бота <b>@samewavebot</b>.</div>';return}
+  if(!S.people.joined||P.view==='settings'){el.innerHTML=setupHTML();return}
+  const unread=(P.inbox||[]).filter(r=>!r.mutual).length;
+  let html=`<div class="seg"><button data-view="feed" class="${P.view==='feed'?'on':''}">Подборка</button><button data-view="inbox" class="${P.view==='inbox'?'on':''}">Волны${unread?`<span class="badge">${unread}</span>`:''}</button><button data-view="settings">Настройки</button></div>`;
+  if(P.err)html+=`<div class="notice">Не получилось загрузить: ${esc(P.err)}<div class="spacer"></div><button class="btn small ghost" id="retryBtn">Повторить</button></div>`;
+  else if(P.loading&&!(P.view==='feed'?P.feed:P.inbox))html+='<div class="empty">Ищем людей на твоей частоте…</div>';
+  else if(P.view==='feed'){
+    let rows=(P.feed||[]).filter(r=>!P.hidden.includes(String(r.tg_id)));
+    if(P.filter!=='all')rows=rows.filter(r=>r.mode===P.filter||r.mode==='both');
+    rows=rows.map(r=>({r,s:(()=>{const d=decodeProfile(r.code);return d?compare(selfAsDecoded(),d).score:0})()})).sort((a,b)=>b.s-a.s);
+    const fc=S.people.mode!=='friends'&&S.people.adult;
+    if(fc)html+=`<div class="chips" style="margin-bottom:12px">${[['all','Все'],['friends','Друзья'],['dating','Знакомства']].map(([k,l])=>`<button class="chip ${P.filter===k?'on':''}" data-filter="${k}">${l}</button>`).join('')}</div>`;
+    if(!rows.length)html+='<div class="empty">Пока никого. Позови друзей — каждый новый человек делает подборку точнее.<div class="spacer"></div><button class="btn small" id="inviteBtn">Пригласить друзей</button></div>';
+    else html+=rows.map((x,i)=>personCard(x.r,{twin:i===0&&x.s>=50})).join('');
+  }else{
+    const rows=(P.inbox||[]).filter(r=>!P.hidden.includes(String(r.tg_id)));
+    const mutual=rows.filter(r=>r.mutual),inc=rows.filter(r=>!r.mutual);
+    if(!rows.length)html+='<div class="empty">Волн пока нет. Отправляй волны тем, кто тебе близок по музыке.</div>';
+    if(mutual.length)html+='<h2>Взаимные волны</h2>'+mutual.map(r=>personCard(r,{inbox:true})).join('');
+    if(inc.length)html+='<h2>Тебе прислали волну</h2>'+inc.map(r=>personCard(r,{inbox:true})).join('');
+  }
+  el.innerHTML=html;
+}
+async function loadPeople(){
+  if(!canNet()||!S.people.joined)return;
+  P.loading=true;P.err='';if(cur==='people')renderPeople();
+  try{
+    const [feed,inbox]=await Promise.all([api('sw_discover',{}),api('sw_inbox',{})]);
+    P.feed=feed||[];P.inbox=inbox||[];
+    const unread=P.inbox.filter(r=>!r.mutual).length;const b=$('#tabBadge');b.style.display=unread?'inline-block':'none';b.textContent=unread;
+  }catch(e){
+    if(/no profile/.test(e.message)){try{await api('sw_save_profile',remoteArgs());return loadPeople()}catch(e2){P.err=e2.message}}
+    else P.err=e.message;
+  }
+  P.loading=false;if(cur==='people')renderPeople();
+}
+function findRow(id){return (P.feed||[]).concat(P.inbox||[]).find(r=>String(r.tg_id)===String(id))}
+$('#peopleBody').addEventListener('click',async e=>{
+  const t=e.target.closest('button,a');if(!t)return;
+  if(t.dataset.mode){S.people.mode=t.dataset.mode;if(t.dataset.mode!=='friends'&&!S.people.adult)toast('Для знакомств подтверди, что тебе есть 18');renderPeople();haptic();return}
+  if(t.dataset.tg){S.people[t.dataset.tg]=!(S.people[t.dataset.tg]!==false&&S.people[t.dataset.tg]);if(t.dataset.tg==='visible'&&S.people.visible===undefined)S.people.visible=false;renderPeople();haptic();return}
+  if(t.id==='joinBtn'){
+    if(S.people.mode!=='friends'&&!S.people.adult){toast('Знакомства — только 18+. Выбери «Друзей» или подтверди возраст');return}
+    t.disabled=true;
+    try{await api('sw_save_profile',remoteArgs());S.people.joined=true;P.view='feed';save();toast('Готово! Ищем твоих людей');loadPeople()}
+    catch(err){toast('Ошибка: '+err.message);t.disabled=false}
+    return}
+  if(t.dataset.view){P.view=t.dataset.view;renderPeople();if(t.dataset.view!=='settings')loadPeople();return}
+  if(t.dataset.filter){P.filter=t.dataset.filter;renderPeople();return}
+  if(t.id==='retryBtn'){loadPeople();return}
+  if(t.id==='inviteBtn'){share();return}
+  if(t.dataset.dots){const m=document.querySelector(`[data-menu="${t.dataset.dots}"]`);m.classList.toggle('on');return}
+  if(t.dataset.hide){P.hidden.push(t.dataset.hide);renderPeople();toast('Скрыто');return}
+  if(t.dataset.report){const id=t.dataset.report;try{await api('sw_report',{p_to:+id,p_reason:'user_report'});P.hidden.push(id);renderPeople();toast('Жалоба отправлена, человек скрыт')}catch(err){toast('Ошибка: '+err.message)}return}
+  if(t.dataset.more){const r=findRow(t.dataset.more);const d=r&&decodeProfile(r.code);if(d){d.name=r.name;stack=[];show('match',false);showMatch(d)}return}
+  if(t.dataset.wave){
+    const id=t.dataset.wave;t.disabled=true;
+    try{const mutual=await api('sw_wave',{p_to:+id});
+      (P.feed||[]).forEach(r=>{if(String(r.tg_id)===id)r.waved_by_me=true});
+      try{TG.HapticFeedback&&TG.HapticFeedback.notificationOccurred('success')}catch(_){}
+      toast(mutual?'Взаимная волна! Контакт во вкладке «Волны»':'Волна отправлена 〰️');
+      if(mutual){P.view='inbox';loadPeople()}else renderPeople();
+    }catch(err){toast('Ошибка: '+err.message);t.disabled=false}
+    return}
+  if(t.dataset.open&&inTG){e.preventDefault();try{TG.openTelegramLink('https://t.me/'+t.dataset.open)}catch(_){location.href=t.href}}
+});
+
 /* ============ SHARE ============ */
 function shareLink(){return APP_LINK+'?startapp='+encodeProfile(S)}
 function share(){
@@ -535,8 +699,9 @@ $('#mAdd').onclick=()=>{const t=$('#mTitle').value.trim(),a=$('#mArtist').value.
   const al={t,a,y:(y&&y>1900&&y<2100)?y:null,g:null,r:0};
   if(S.albums.some(b=>albumKey(b)===albumKey(al))){toast('Уже добавлен');return}
   S.albums.push(al);save();$('#mTitle').value=$('#mArtist').value=$('#mYear').value='';$('#manual').classList.remove('on');render(cur);toast('Добавлено')};
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{stack=[];show(b.dataset.tab,false);haptic()});
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{stack=[];show(b.dataset.tab,false);haptic();if(b.dataset.tab==='people')loadPeople()});
 $('#shareBtn').onclick=share;$('#shareBtn2').onclick=share;
+$('#toPeopleBtn').onclick=()=>{stack=[];show('people',false);loadPeople()};
 $('#toMatchBtn').onclick=()=>{stack=[];show('match',false)};
 $('#copyCode').onclick=()=>copy(encodeProfile(S),'Код скопирован');
 $('#compareBtn').onclick=()=>{const fr=decodeProfile($('#friendCode').value);if(!fr){toast('Не похоже на код волны');return}showMatch(fr)};
@@ -545,7 +710,7 @@ $('#addMoreBtn').onclick=()=>{$('#q').value='';show('albums')};
 $('#editGenres').onclick=()=>show('genres');$('#editMoods').onclick=()=>show('moods');
 $('#resetBtn').onclick=()=>$('#resetConfirm').style.display='block';
 $('#resetNo').onclick=()=>$('#resetConfirm').style.display='none';
-$('#resetYes').onclick=()=>{S={name:'',genres:[],moods:[],albums:[],done:false};save();stack=[];show('welcome',false)};
+$('#resetYes').onclick=()=>{if(S.people&&S.people.joined&&canNet())api('sw_delete_me',{}).catch(()=>{});S={name:'',genres:[],moods:[],albums:[],done:false,people:{joined:false,mode:'friends',adult:false,visible:true}};save();stack=[];show('welcome',false)};
 // В режиме редактирования жанров/настроений после онбординга — кнопка "Готово"
 const _upd=updateNext;updateNext=function(){_upd();if(S.done&&(cur==='genres'||cur==='moods')){$('#nextBtn').textContent='Готово';$('#sticky').style.display='block'}};
 const _next=$('#nextBtn').onclick;$('#nextBtn').onclick=()=>{if(S.done&&(cur==='genres'||cur==='moods')){save();stack=[];show('library',false);return}_next()};
@@ -559,7 +724,7 @@ function boot(){
     const sp=inTG&&TG.initDataUnsafe&&TG.initDataUnsafe.start_param;
     const hashCode=(location.hash.match(/^#c-([A-Za-z0-9_-]+)/)||[])[1];
     const fr=sp?decodeProfile(sp):hashCode?decodeProfile(hashCode):null;
-    if(S.done){show(fr?'match':'wave',false);if(fr)showMatch(fr)}
+    if(S.done){show(fr?'match':'wave',false);if(fr)showMatch(fr);loadPeople()}
     else{pendingFriend=fr;show('welcome',false);
       if(fr){$('#startBtn').textContent=(fr.name?fr.name+' зовёт сравнить волны':'Тебя зовут сравнить волны')+' →'}}
   });
