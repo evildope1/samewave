@@ -65,6 +65,65 @@ body.m-c .bgwave path:nth-child(2){animation-duration:13s;animation-direction:re
 @keyframes drift{from{transform:translateX(0)}to{transform:translateX(-400px)}}
 .bgwave{display:none}body.m-c .bgwave{display:block}
 .app{position:relative;z-index:1}
+
+/* ===== D · Премиум (LottieFiles motion-design-skill: архетип Premium, 3 слоя движения) ===== */
+@keyframes premIn{0%{opacity:0;transform:translate(0,20px)}50%{opacity:.8;transform:translate(6px,6px)}100%{opacity:1;transform:none}}
+@keyframes premShadow{from{box-shadow:0 0 0 rgba(255,255,255,0)}to{box-shadow:0 24px 70px rgba(255,255,255,.07)}}
+@keyframes ambient{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.7;transform:scale(1.08)}}
+@keyframes settle{0%{transform:scale(.97)}60%{transform:scale(1.015)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(-50%)}20%{transform:translateX(calc(-50% - 12px))}40%{transform:translateX(calc(-50% + 10px))}60%{transform:translateX(calc(-50% - 6px))}80%{transform:translateX(calc(-50% + 3px))}}
+@keyframes check{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+body.m-d .screen.on{animation:premIn .5s cubic-bezier(.4,0,.2,1)}
+body.m-d .stg{animation:premIn .45s cubic-bezier(.4,0,.2,1) both;animation-delay:calc(var(--i)*60ms + 150ms)}
+body.m-d .chars span{animation:fade .45s cubic-bezier(.4,0,.2,1) both;animation-delay:calc(var(--i)*18ms + 100ms)}
+body.m-d .dna{animation:premShadow .6s cubic-bezier(.4,0,.2,1) .05s both}
+body.m-d .dna::after{content:'';position:absolute;inset:-30% -10% auto;height:70%;background:radial-gradient(closest-side,rgba(255,255,255,.07),transparent);pointer-events:none;animation:ambient 6s ease-in-out infinite}
+body.m-d .btn:active,body.m-d .chip:active{transform:scale(.97);transition:transform .12s cubic-bezier(.4,0,.2,1)}
+body.m-d .btn,body.m-d .chip{transition:transform .28s cubic-bezier(.175,.885,.32,1.275),background .2s,color .2s}
+body.m-d .toast.err{animation:shake .36s ease-in-out}
+body.m-d .rscore.ok .num{animation:settle .4s cubic-bezier(.175,.885,.32,1.275)}
+.okmark{display:none;width:22px;height:22px}.rscore.ok .okmark{display:inline-block}
+.okmark path{stroke-dasharray:30;stroke-dashoffset:0}
+body.m-d .rscore.ok .okmark path{animation:check .35s cubic-bezier(.4,0,.2,1) .1s both}
+/* ===== E · Линия (mg-styles «Line Art»: одна линия и светящееся перо ведёт рисунок) ===== */
+.pen{display:none}
+body.m-e .pen{display:inline}
+body.m-e .sp.draw path{animation-duration:1.8s;animation-timing-function:cubic-bezier(.65,0,.35,1);animation-delay:calc(var(--i,0)*12ms)}
+body.m-e .linewipe{position:fixed;top:0;left:0;right:0;height:1px;background:#e8e8e8;transform-origin:left;transform:scaleX(0);z-index:40;box-shadow:0 0 8px #fff}
+body.m-e .linewipe.go{animation:lw .7s cubic-bezier(.65,0,.35,1) forwards}
+@keyframes lw{0%{transform:scaleX(0);opacity:1}70%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+body.m-e .screen.on{animation:fade .45s ease .2s both}
+body.m-e .arch{position:relative;display:inline-block}
+body.m-e .arch::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:1px;background:#ddd;transform-origin:left;animation:lw2 .9s cubic-bezier(.65,0,.35,1) .6s both}
+@keyframes lw2{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+body.m-e .chars span{animation:fade .4s ease both;animation-delay:calc(var(--i)*30ms + 400ms)}
+body.m-e .stg{animation:fade .5s ease both;animation-delay:calc(var(--i)*80ms + 900ms)}
+body.m-e .btn:active{transform:scale(.98)}
+/* ===== F · Ручная (mg-styles «Line Boil»: линии перерисованы от руки и «кипят» на двойках) ===== */
+body.m-f .sp,body.m-f h1,body.m-f .arch,body.m-f .eq,body.m-f .pct{filter:url(#boil)}
+body.m-f .screen.on{animation:twos .42s steps(5,end) both}
+@keyframes twos{0%{opacity:0;transform:translateY(14px) rotate(-.6deg)}100%{opacity:1;transform:none}}
+body.m-f .stg{animation:twos .4s steps(4,end) both;animation-delay:calc(var(--i)*83ms + 200ms)}
+body.m-f .chars span{animation:twos .25s steps(3,end) both;animation-delay:calc(var(--i)*42ms)}
+body.m-f .btn:active,body.m-f .chip:active{transform:scale(1.05,.94)}
+body.m-f .sp.draw path{animation-timing-function:steps(12,end)}
+/* ===== G · HUD (mg-styles «Cyberpunk HUD/FUI», в серебре бренда) ===== */
+body.m-g::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.035) 0 1px,transparent 1px 3px),radial-gradient(120% 90% at 50% 40%,transparent 60%,rgba(0,0,0,.5))}
+body.m-g h1,body.m-g .arch,body.m-g .pct{text-shadow:0 0 12px rgba(255,255,255,.35),1px 0 rgba(255,40,80,.35),-1px 0 rgba(60,220,255,.35)}
+@keyframes flick{0%{opacity:0}20%{opacity:.7}30%{opacity:.15}45%{opacity:.9}55%{opacity:.4}100%{opacity:1}}
+body.m-g .screen.on{animation:flick .35s linear}
+body.m-g .chars span{opacity:0;animation:typ .01s linear forwards;animation-delay:calc(var(--i)*45ms + 150ms)}
+@keyframes typ{to{opacity:1}}
+body.m-g .chars::after{content:'_';animation:blink .8s steps(1) infinite;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+body.m-g .stg{animation:flick .3s linear both;animation-delay:calc(var(--i)*70ms + 300ms)}
+body.m-g .dna,body.m-g .card,body.m-g .pcard{border-color:#3a3a3a}
+.hudring{display:none}
+body.m-g .score{position:relative}
+body.m-g .hudring{display:block;position:absolute;left:50%;top:22px;width:128px;height:128px;transform:translateX(-50%);pointer-events:none;opacity:.55}
+body.m-g .hudring .r1{animation:spin 8s linear infinite;transform-origin:75px 75px}
+body.m-g .hudring .r2{animation:spin 5s linear infinite reverse;transform-origin:75px 75px}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 /* ===== Оцени альбом ===== */
 .ratecta{display:flex;align-items:center;gap:14px;padding:12px;border-radius:18px;background:var(--card);border:1px solid var(--line);margin-top:12px;width:100%;text-align:left}
@@ -199,6 +258,8 @@ p.sub{color:var(--muted);margin:0 0 18px}
 </head>
 <body>
 <svg class="bgwave" viewBox="0 0 800 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90 Q100 30 200 90 T400 90 T600 90 T800 90 T1000 90 T1200 90" fill="none" stroke="#fff" stroke-width="1.2"/><path d="M0 110 Q100 160 200 110 T400 110 T600 110 T800 110 T1000 110 T1200 110" fill="none" stroke="#fff" stroke-width="1"/></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="boil"><feTurbulence id="boilT" type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter></svg>
+<div class="linewipe" id="linewipe"></div>
 <div class="app">
 
   <!-- 0. Welcome -->
@@ -301,7 +362,7 @@ p.sub{color:var(--muted);margin:0 0 18px}
     <div id="ratedWrap"></div>
     <h2>Анимации</h2>
     <div class="chips" id="motionChips"></div>
-    <p class="hint">Три варианта моушн-дизайна. Выбери тот, что нравится больше.</p>
+    <p class="hint">Пробные варианты моушн-дизайна. «Премиум» собран по LottieFiles motion-design-skill, «Линия», «Ручная» и HUD по стилям mg-styles-15.</p>
     <h2>Профиль</h2>
     <div class="row"><button class="btn ghost small" id="editGenres">Жанры</button><button class="btn ghost small" id="editMoods">Настроения</button></div>
     <div class="spacer"></div>
@@ -401,7 +462,7 @@ function norm(s){return (s||'').toLowerCase().replace(/ё/g,'е').replace(/[^\p{
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function haptic(type){try{TG&&TG.HapticFeedback&&TG.HapticFeedback.selectionChanged()}catch(e){}}
-function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),2000)}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.remove('err');void t.offsetWidth;if(/^(Ошибка|Максимум|Укажи|Не похоже|Знакомства)/.test(msg))t.classList.add('err');t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),2000)}
 function dice(a,b){if(!a.length&&!b.length)return 0;const B=new Set(b);let s=0;a.forEach(x=>{if(B.has(x))s++});return 2*s/(a.length+b.length)}
 function bitsOf(list,keys){let n=0;list.forEach(k=>{const i=keys.indexOf(k);if(i>=0)n|=1<<i});return n}
 function fromBits(n,keys){return keys.filter((_,i)=>n&(1<<i))}
@@ -855,8 +916,9 @@ const _next=$('#nextBtn').onclick;$('#nextBtn').onclick=()=>{if(S.done&&(cur==='
 
 
 /* ============ MOTION ============ */
-const MOTIONS=[['a','Чистые'],['b','Пружина'],['c','Живая волна']];
-function applyMotion(){document.body.classList.remove('m-a','m-b','m-c');document.body.classList.add('m-'+(S.motion||'b'))}
+const MOTIONS=[['a','Чистые'],['b','Пружина'],['c','Живая волна'],['d','Премиум'],['e','Линия'],['f','Ручная'],['g','HUD']];
+const MOTION_NOTE={a:'Чистые: только отклик на действия',b:'Пружина: blur-появление, цифры, подсветка рамки',c:'Живая волна: всё дышит, касания звучат кольцами',d:'Премиум (LottieFiles): плавные дуги, тень догоняет карточку, мягкий фон',e:'Линия (mg-styles Line Art): светящееся перо рисует волну',f:'Ручная (mg-styles Line Boil): линии «кипят», анимация на двойках',g:'HUD (mg-styles FUI): бегущие цифры, кольца, сканлайны'};
+function applyMotion(){document.body.classList.remove(...MOTIONS.map(m=>'m-'+m[0]));document.body.classList.add('m-'+(S.motion||'b'))}
 function splitChars(t){return [...String(t)].map((ch,i)=>`<span style="--i:${i}">${esc(ch)}</span>`).join('')}
 function prepSP(svg,live){
   if(!svg)return;svg.querySelectorAll('path').forEach((p,i)=>{let L=1200;try{L=Math.ceil(p.getTotalLength())}catch(e){}p.style.setProperty('--len',L);p.style.setProperty('--i',i);p.style.setProperty('--d',i%2?1:-1)});
@@ -866,15 +928,35 @@ function prepSP(svg,live){
 function countUp(el){
   const to=+el.dataset.count;if(isNaN(to))return;
   if(S.motion==='b'){el.innerHTML=String(to).split('').map((d,i)=>`<span class="digit" style="--i:${i}">${d}</span>`).join('')+'%';return}
-  const t0=performance.now(),dur=S.motion==='c'?1400:900;
+  if(S.motion==='g'){let n=0;const iv=setInterval(()=>{el.textContent=String(Math.floor(Math.random()*100)).padStart(String(to).length,'0')+'%';if(++n>12){clearInterval(iv);el.textContent=to+'%'}},45);return}
+  if(S.motion==='f'){let n=0;const st=[.2,.45,.7,.9,1];const iv=setInterval(()=>{el.textContent=Math.round(to*st[n])+'%';if(++n>=st.length)clearInterval(iv)},83);return}
+  const t0=performance.now(),dur=S.motion==='c'?1400:S.motion==='d'?600:900;
   const f=now=>{const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,3);el.textContent=Math.round(to*e)+'%';if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f);
 }
 function motionAfter(id){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(S.motion==='e'){const lw=$('#linewipe');lw.classList.remove('go');void lw.offsetWidth;lw.classList.add('go')}
+  if(id==='wave'&&S.motion==='e')penTip($('#dnaCard svg.sp'));
+  if(id==='wave'&&S.motion==='g')document.querySelectorAll('#dnaCard .stats b').forEach(rollText);
+  if(id==='matchResult'&&S.motion==='g'){const sc=$('#matchResult .score');if(sc&&!sc.querySelector('.hudring'))sc.insertAdjacentHTML('afterbegin',HUDRING)}
   if(id==='wave'){prepSP($('#dnaCard svg.sp'));const c=$('#dnaCard');c.classList.remove('beam');void c.offsetWidth;if(S.motion==='b')c.classList.add('beam')}
   if(id==='matchResult'){document.querySelectorAll('#matchResult [data-count]').forEach(countUp);prepSP(null)}
   if(id==='people'&&S.motion==='c')document.querySelectorAll('#peopleBody svg.sp').forEach(sv=>prepSP(sv))
 }
+
+const HUDRING=`<svg class="hudring" viewBox="0 0 150 150"><g class="r1"><circle cx="75" cy="75" r="70" fill="none" stroke="#fff" stroke-width=".6" stroke-dasharray="2 6"/></g><g class="r2"><circle cx="75" cy="75" r="60" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="40 14 4 14"/></g></svg>`;
+function rollText(el){const fin=el.textContent;if(!/\d/.test(fin))return;let n=0;const iv=setInterval(()=>{el.textContent=fin.replace(/\d/g,()=>Math.floor(Math.random()*10));if(++n>10){clearInterval(iv);el.textContent=fin}},50)}
+function penTip(svg){
+  if(!svg)return;const paths=svg.querySelectorAll('path');const p=paths[paths.length-1];if(!p)return;
+  const old=svg.querySelector('.pen');if(old)old.remove();
+  const ns='http://www.w3.org/2000/svg';const g=document.createElementNS(ns,'g');g.setAttribute('class','pen');
+  g.innerHTML=`<circle r="7" fill="#fff" opacity=".18"/><circle r="2.6" fill="#fff"/>`;
+  const am=document.createElementNS(ns,'animateMotion');am.setAttribute('dur','1.8s');am.setAttribute('fill','freeze');am.setAttribute('calcMode','spline');am.setAttribute('keyPoints','0;1');am.setAttribute('keyTimes','0;1');am.setAttribute('keySplines','.65 0 .35 1');am.setAttribute('path',p.getAttribute('d'));am.setAttribute('begin','indefinite');
+  g.appendChild(am);svg.appendChild(g);try{am.beginElement()}catch(e){}
+  setTimeout(()=>{g.style.transition='opacity .6s';g.style.opacity='0'},1900);
+}
+let boilT=null;
+function startBoil(){if(boilT)return;const t=document.getElementById('boilT');let k=0;boilT=setInterval(()=>{if(S.motion!=='f'||document.hidden){if(S.motion!=='f'){clearInterval(boilT);boilT=null}return}t.setAttribute('seed',1+(k++%3))},166)}
 function pop(el){if(!el)return;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}
 document.addEventListener('pointerdown',e=>{
   if(S.motion!=='c')return;const t=e.target.closest('button,.btn,a');if(!t||t.disabled)return;
@@ -884,7 +966,7 @@ document.addEventListener('pointerdown',e=>{
 document.addEventListener('click',e=>{if(S.motion==='b'){const t=e.target.closest('.chip,.btn:not([disabled]),.act,.rate');if(t)pop(t)}},true);
 function renderMotionChips(){const el=$('#motionChips');el.innerHTML=MOTIONS.map(([k,l])=>`<button class="chip ${S.motion===k?'on':''}" data-motion="${k}">${l}</button>`).join('')}
 $('#motionChips').addEventListener('click',e=>{const b=e.target.closest('[data-motion]');if(!b)return;S.motion=b.dataset.motion;save();applyMotion();renderMotionChips();haptic();
-  toast(['Чистые: только отклик на действия','Пружина: blur-появление, цифры, подсветка рамки','Живая волна: всё дышит, касания звучат кольцами'][MOTIONS.findIndex(x=>x[0]===S.motion)])});
+  toast(MOTION_NOTE[S.motion]);if(S.motion==='f')startBoil()});
 
 /* ============ RATE THIS ALBUM ============ */
 const RATE_WORDS=['','Мимо','Мимо','Слабо','Слабо','Нормально','Нормально','Сильно','Сильно','Шедевр','Изменил мою жизнь'];
@@ -913,7 +995,7 @@ function renderRate(){
   body.innerHTML=`<div class="rcard">
     ${covBox(a)}
     <div class="rt">${esc(a.t)}</div><div class="ra">${esc(a.a)}${a.y?', '+a.y:''}</div>
-    <div class="rscore"><span class="num display" id="rNum">${R.val||'—'}</span><span class="word" id="rWord">${R.val?RATE_WORDS[R.val]:'Сколько из 10?'}</span></div>
+    <div class="rscore${R.done?' ok':''}"><svg class="okmark" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="num display" id="rNum">${R.val||'—'}</span><span class="word" id="rWord">${R.val?RATE_WORDS[R.val]:'Сколько из 10?'}</span></div>
     <div class="eq" id="eq">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button style="--n:${n}" data-v="${n}" aria-label="${n} из 10" class="${n<=R.val?'on':''}${n===R.val?' peak':''}"></button>`).join('')}</div>
     ${R.done?`<div class="rdone">
       <div class="row"><button class="btn ghost" id="rShare">Поделиться оценкой</button><button class="btn" id="rNext">Следующий</button></div>
@@ -962,7 +1044,7 @@ $('#rateBack').onclick=()=>{stack=[];show('wave',false)};
 let pendingFriend=null;
 function boot(){
   if(TG){try{TG.ready();TG.expand();TG.setHeaderColor&&TG.setHeaderColor('#000000');TG.setBackgroundColor&&TG.setBackgroundColor('#000000');TG.BackButton&&TG.BackButton.onClick(back)}catch(e){}}
-  load();S.rated=S.rated||{};S.motion=(location.search.match(/motion=([abc])/)||[])[1]||S.motion||'b';applyMotion();
+  load();setTimeout(()=>{if(S.motion==='f')startBoil()},0);S.rated=S.rated||{};S.motion=(location.search.match(/motion=([a-g])/)||[])[1]||S.motion||'b';applyMotion();
   cloudLoad(()=>{applyMotion();
     const sp=inTG&&TG.initDataUnsafe&&TG.initDataUnsafe.start_param;
     const hashCode=(location.hash.match(/^#c-([A-Za-z0-9_-]+)/)||[])[1];
