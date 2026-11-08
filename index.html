@@ -266,6 +266,25 @@ body.has-mini .app{padding-bottom:calc(170px + var(--safe-b))}
 .about{font-size:14px;line-height:1.55;color:var(--silver);white-space:pre-line}
 .about.cut{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .src{font-size:11px;color:var(--muted);margin-top:8px}
+/* ===== Music Passport + любимые артисты ===== */
+.pass{margin:14px 0 6px;text-align:left}
+.pchips,.pfilter{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}
+.pchips .chip,.pfilter .chip{padding:7px 11px;font-size:13px}
+.pfilter{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:4px -18px 10px;padding:0 18px}.pfilter::-webkit-scrollbar{display:none}.pfilter .chip{flex:none}
+textarea.rev{width:100%;box-sizing:border-box;background:#0c0c0c;border:1px solid #262626;border-radius:14px;padding:12px;color:var(--fg);font:inherit;font-size:14px;resize:none;outline:none;line-height:1.45}
+textarea.rev:focus{border-color:#555}
+.revcnt{text-align:right;font-size:11px;color:var(--muted);margin-top:4px}
+.alb.pas .meta{min-width:0}.rvs{font-size:12px;color:var(--silver);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-style:italic}
+.mine{margin:4px 0 10px;padding:12px 14px;border:1px solid #262626;border-radius:16px;background:rgba(20,20,20,.7);backdrop-filter:blur(6px)}
+.mine .mh{display:flex;align-items:baseline;gap:10px}.mine .mh b{font-size:18px}.mine .mh span{color:var(--silver);font-size:13px}
+.mine .mr{margin-top:6px;font-size:14px;line-height:1.45;font-style:italic}.mine .mr.empty{font-style:normal;color:var(--muted);font-size:12px}
+.favart{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fa{display:inline-flex;align-items:center;gap:4px;padding:7px 6px 7px 12px;border-radius:999px;border:1px solid #333;font-size:13px}
+.fa .artl{text-decoration:none}.fa button{width:22px;height:22px;border-radius:50%;color:var(--muted);font-size:15px;line-height:1}
+.favart .chip{padding:7px 12px;font-size:13px;border-style:dashed}
+.asearch{margin-top:10px}.asearch input{width:100%;box-sizing:border-box;background:#0c0c0c;border:1px solid #2a2a2a;border-radius:14px;padding:12px 14px;outline:none}
+.ares{display:flex;align-items:center;justify-content:space-between;padding:10px 4px;border-bottom:1px solid #161616}.ares b{display:block;font-size:14px}.ares small{color:var(--muted);font-size:12px}
+
 
 /* ===== Оцени альбом ===== */
 .ratecta{display:flex;align-items:center;gap:14px;padding:12px;border-radius:18px;background:var(--card);border:1px solid var(--line);margin-top:12px;width:100%;text-align:left}
@@ -555,6 +574,7 @@ p.sub{color:var(--muted);margin:0 0 18px}
   <div class="vidtag" id="albVidTag"></div>
   <div class="alb-t" id="albT"></div><div class="alb-a" id="albA"></div><div class="alb-m" id="albM"></div>
   <div class="alb-acts" id="albActs"></div>
+  <div id="albMine"></div>
   <div id="albTracks"></div>
   <p class="hint" id="albHint" style="text-align:center"></p>
 </div></div>
@@ -712,7 +732,7 @@ async function findCover(a){
 
 /* ============ STATE ============ */
 const KEY='samewave_profile_v1';
-let S = {name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:'b',status:'',anthem:null,listen:null,stats:{plays:0,waves:0,mutual:0},ach:[],people:{joined:false,mode:'friends',adult:false,visible:true}};
+let S = {name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:'b',status:'',anthem:null,listen:null,stats:{plays:0,waves:0,mutual:0},ach:[],artists:[],people:{joined:false,mode:'friends',adult:false,visible:true}};
 function load(){try{const v=localStorage.getItem(KEY);if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}}
 function save(){S.people=S.people||{joined:false,mode:'friends',adult:false,visible:true};try{checkAch()}catch(e){}if(S.done&&S.people.joined)syncSoon();const v=JSON.stringify(S);try{localStorage.setItem(KEY,v)}catch(e){}
   try{if(inTG&&TG.CloudStorage)TG.CloudStorage.setItem(KEY,v)}catch(e){}}
@@ -728,7 +748,7 @@ function encodeProfile(p){
   let eras=0;p.albums.forEach(a=>{const b=decadeBit(a.y);if(b>=0)eras|=1<<b});
   const al=p.albums.slice(0,15);
   const toks=al.map(a=>{const k=albumKey(a);const id=k[0]==='c'?'c'+(+k.slice(1)).toString(36).padStart(2,'0'):k;return id+(a.r?a.r.toString(36):'0')});
-  const arts=[...new Set(al.map(a=>h36(norm(a.a),4)))];
+  const arts=[...new Set([...(p.artists||[]).map(x=>h36(norm(x.n),4)),...al.map(a=>h36(norm(a.a),4))])].slice(0,24);
   return ['1',bitsOf(p.genres,gk).toString(36),bitsOf(p.moods,mk).toString(36),eras.toString(36),toks.join('-')||'0',arts.join('-')||'0',nameHex(p.name)||'0'].join('_');
 }
 function decodeProfile(code){
@@ -929,7 +949,7 @@ function showMatch(fr){
   const me=selfAsDecoded(),c=compare(me,fr),[lbl,desc]=verdict(c.score);
   const labels={albums:'Любимые альбомы',artists:'Исполнители',genres:'Жанры',ratings:'Оценки',eras:'Эпохи',moods:'Эстетика'};
   const sharedAlbums=c.sharedA.map(k=>S.albums.find(a=>albumKey(a)===k)).filter(Boolean);
-  const sharedArtists=c.sharedR.map(h=>{const a=S.albums.find(a=>h36(norm(a.a),4)===h);return a&&a.a}).filter(Boolean);
+  const sharedArtists=c.sharedR.map(h=>{const x=(S.artists||[]).find(x=>h36(norm(x.n),4)===h);if(x)return x.n;const a=S.albums.find(a=>h36(norm(a.a),4)===h);return a&&a.a}).filter(Boolean);
   $('#matchResult').innerHTML=`<div class="spacer"></div><div class="dna"><div class="brand display"><span>SAME WAVE</span><span>MATCH</span></div>
    <div class="score"><div class="who">${esc(S.name||'Ты')} × ${esc(fr.name||'друг')}</div><div class="pct display" data-count="${c.score}">${c.score}%</div><div class="lbl">${lbl}</div><div class="desc">${desc}</div></div>
    <div class="bars">${Object.keys(labels).filter(k=>c.parts[k]!=null).map(k=>`<div class="bar"><div class="top"><span>${labels[k]}</span><span>${Math.round(c.parts[k]*100)}%</span></div><div class="track"><div class="fill" data-w="${Math.round(c.parts[k]*100)}"></div></div></div>`).join('')}</div>
@@ -1262,6 +1282,8 @@ function renderAlbActs(){
   const a=ALB.a;if(!a)return;const inFav=S.albums.some(x=>albumKey(x)===albumKey(a));const r=(S.rated||{})[albumKey(a)];
   const here=PLAY.src!=='art'&&sameA(PLAY.a,a)&&PLAY.i>=0;const tr=here?PLAY.info.tracks[PLAY.i]:null;
   $('#albActs').innerHTML=`<button class="btn ${inFav?'ghost':''}" id="albFav">${inFav?'В любимых ✓':'+ В любимые'}</button><button class="btn ghost" id="albRate">${r&&r.r?'Моя оценка: '+r.r:'Оценить'}</button><button class="btn ghost" id="albYa">Яндекс Музыка</button>${tr?`<button class="btn ghost" id="albAnthem">${S.anthem&&S.anthem.p===tr.p?'★ Гимн профиля':'☆ Сделать гимном'}</button>`:''}`;
+  const p=r&&passOf(r.st);
+  $('#albMine').innerHTML=r&&r.r?`<div class="mine"><div class="mh"><b class="display">${r.r}/10</b><span>${p?p[1]+' '+p[2]:RATE_WORDS[r.r]}</span></div>${r.rv?`<div class="mr">«${esc(r.rv)}»</div>`:'<div class="mr empty">Добавь пару слов о альбоме — нажми «Моя оценка».</div>'}</div>`:'';
 }
 function playTrack(i){
   const info=ALB.info;if(!info)return;const t=info.tracks[i];if(!t||!t.p)return;
@@ -1311,7 +1333,7 @@ $('#albActs').addEventListener('click',e=>{const b=e.target.closest('button');if
   if(b.id==='albFav'){const k=albumKey(a);const i=S.albums.findIndex(x=>albumKey(x)===k);
     if(i>=0){S.albums.splice(i,1);toast('Убрано из любимых')}else{if(S.albums.length>=30){toast('Максимум 30 альбомов');return}S.albums.push({t:a.t,a:a.a,y:a.y||null,g:a.g||null,c:a.c,r:0});toast('Добавлено в любимые')}
     save();renderAlbActs();if(['albums','library','wave'].includes(cur))render(cur);return}
-  if(b.id==='albRate'){closeAlbum();R={cur:Object.assign({},a),val:0,done:false};stack=[cur];show('rate',false);renderRate();return}
+  if(b.id==='albRate'){closeAlbum();const ex=(S.rated||{})[albumKey(a)];R={cur:Object.assign({},a),val:ex&&ex.r||0,done:!!(ex&&ex.r)};stack=[cur];show('rate',false);renderRate();return}
   if(b.id==='albAnthem'){const t=PLAY.info.tracks[PLAY.i];S.anthem={t:t.t,p:t.p,al:a.t,ar:a.a,y:a.y||null,c:a.c};save();renderAlbActs();toast('Гимн профиля: '+t.t);haptic();return}
   if(b.id==='albYa'){openLink('https://music.yandex.ru/search?text='+encodeURIComponent(a.a+' '+a.t));return}
 });
@@ -1414,7 +1436,7 @@ function renderArtist(){
   const d=ART.d;if(!d)return;artHero(d);
   const ys=[...d.albums,...d.singles].map(x=>x.y).filter(Boolean);
   $('#artM').textContent=[d.genre,ys.length?'с '+Math.min(...ys):'',d.albums.length?d.albums.length+' '+plural(d.albums.length,'альбом','альбома','альбомов'):''].filter(Boolean).join(' · ');
-  $('#artActs').innerHTML=`${d.top.length?'<button class="btn" id="artPlay">▶ Слушать</button>':''}<button class="btn ghost" id="artYa">Яндекс Музыка</button>`;
+  $('#artActs').innerHTML=`${d.top.length?'<button class="btn" id="artPlay">▶ Слушать</button>':''}<button class="btn ghost" id="artFav">${(S.artists||[]).some(x=>norm(x.n)===norm(d.name))?'♥ В любимых':'♡ В любимые'}</button><button class="btn ghost" id="artYa">Яндекс Музыка</button>`;
   const F=artFacts(d);let h='';
   if(d.top.length)h+=`<div class="art-sec"><h3>Популярное<small>превью 30 сек</small></h3><div id="artTop">${d.top.map((t,i)=>`<div class="trk ${i>=5?'more':''}" data-i="${i}" ${i>=5?'style="display:none"':''}><div class="tc">${t.u?`<img src="${esc(t.u)}" alt="">`:''}</div><span class="eqm"><i></i><i></i><i></i></span><span class="tt">${esc(t.t)}<span class="ts">${esc(t.al.t)}${t.al.y?' · '+t.al.y:''}</span></span><span class="d">${t.ms?fmt(t.ms):''}</span><span class="pb">${PLAY_SVG}</span><span class="prog"></span></div>`).join('')}</div>${d.top.length>5?'<button class="link" id="artMore">Показать ещё</button>':''}</div>`;
   if(F.length)h+=`<div class="art-sec"><h3>Интересные факты<small>листай →</small></h3><div class="facts">${F.map((f,i)=>`<div class="fact ${f.me?'me':''}"><div class="fn">${f.me?'ТЫ И АРТИСТ':String(i+1-(F[0].me?1:0)).padStart(2,'0')}</div>${esc(f.t)}</div>`).join('')}</div>${d.wiki&&d.wiki.facts.length?`<div class="src">Часть фактов — из Википедии (CC BY-SA)</div>`:''}</div>`;
@@ -1445,6 +1467,8 @@ $('#artSheet').addEventListener('click',e=>{
     const a={t:x.t,a:ART.d.name,y:x.y,cid:x.cid,cc:ART.d.cc};const id=covId(a);if(x.u&&!COVERS[id])COVERS[id]=x.u;openAlbum(a);return}
   const b=e.target.closest('button');if(!b)return;
   if(b.id==='artPlay'){playArtTrack(0);return}
+  if(b.id==='artFav'&&ART.d){const i=(S.artists||[]).findIndex(x=>norm(x.n)===norm(ART.d.name));if(i>=0){S.artists.splice(i,1);save();toast('Убрано из любимых')}else addFavArtist(ART.d.name,ART.d.genre);
+    b.textContent=(S.artists||[]).some(x=>norm(x.n)===norm(ART.d.name))?'♥ В любимых':'♡ В любимые';if(cur==='library')renderProfile();return}
   if(b.id==='artMore'){document.querySelectorAll('#artTop .more').forEach(el=>el.style.display='');b.remove();return}
   if(b.id==='artAboutMore'){$('#artAbout').classList.remove('cut');b.remove();return}
   if(b.id==='artWiki'&&ART.d&&ART.d.wiki){openLink(ART.d.wiki.url);return}
@@ -1473,6 +1497,8 @@ const ACH=[
   ['omni','🌈','Всеядный','6 жанров в коллекции',s=>new Set(s.albums.map(a=>a.g).filter(Boolean)).size>=6],
   ['dj','🎛️','Диджей','Послушал 10 превью',s=>(s.stats&&s.stats.plays||0)>=10],
   ['anthem','⭐','Свой гимн','Выбрал трек-гимн',s=>!!s.anthem],
+  ['review','✒️','Рецензент','Написал 3 рецензии',s=>Object.values(s.rated||{}).filter(v=>v&&v.rv&&v.rv.length>=20).length>=3],
+  ['fans','🎤','Фанат','5 любимых артистов',s=>(s.artists||[]).length>=5],
   ['wave','〰️','Первая волна','Отправил волну',s=>(s.stats&&s.stats.waves||0)>=1],
   ['mutual','🤝','На одной волне','Взаимная волна',s=>(s.stats&&s.stats.mutual||0)>=1],
 ];
@@ -1513,6 +1539,9 @@ function renderProfile(){
   <div class="pstats"><div><b>${S.albums.length}</b><span>любимых</span></div><div><b>${rs.length}</b><span>оценок</span></div><div><b>${rs.length?(rs.reduce((a,v)=>a+v.r,0)/rs.length).toFixed(1):'—'}</b><span>средняя</span></div><div><b>${(S.ach||[]).length}</b><span>наград</span></div></div>
   ${an?`<div class="anthem" id="anthemCard">${covBox({t:an.al,a:an.ar,y:an.y,c:an.c})}<div class="meta"><small>Трек-гимн</small><b>${esc(an.t)}</b><div class="a">${artL(an.ar)} · ${esc(an.al)}</div></div><button class="pb" id="anthemPlay" aria-label="Слушать гимн">${PLAY_SVG}</button></div>`
      :`<div class="anthem" style="border-style:dashed"><div class="meta"><small>Трек-гимн</small><b>Пока не выбран</b><div class="a">Открой альбом, включи трек и нажми «Сделать гимном»</div></div></div>`}
+  <h2>Любимые артисты <span class="hint" style="font-weight:600">${(S.artists||[]).length}/12</span></h2>
+  <div class="favart">${(S.artists||[]).map((x,i)=>`<span class="fa"><span class="artl" data-artist="${esc(x.n)}">${esc(x.n)}</span><button data-delart="${i}" aria-label="Убрать">×</button></span>`).join('')}<button class="chip" id="addArtBtn">+ Артист</button></div>
+  <div id="artSearchBox"></div>
   ${gs.length?`<h2>Вкус в цифрах</h2><div class="gbars">${gs.map(([g,v])=>`<div class="gbar"><span>${esc((GENRES.find(x=>x[0]===g)||[0,g])[1])}</span><div class="tr"><div class="fl" data-w="${v}" style="width:0"></div></div><span>${v}%</span></div>`).join('')}</div>`:''}
   <h2>Достижения <span class="hint" style="font-weight:600">${(S.ach||[]).length}/${ACH.length}</span></h2>
   <div class="badges">${ACH.map(([id,ic,t,dsc])=>`<div class="badge2 ${(S.ach||[]).includes(id)?'':'lock'} ${NEW_ACH.has(id)?'new':''}"><div class="ic">${ic}</div><b>${esc(t)}</b><small>${esc(dsc)}</small></div>`).join('')}</div>`;
@@ -1520,7 +1549,23 @@ function renderProfile(){
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#profHead .fl').forEach(f=>f.style.width=f.dataset.w+'%'),60));
 }
 const anthemAU=new Audio();
+async function searchArtists(q){
+  const order=isCyr(q)?['RU','US']:['US','RU'];const out=[];const seen=new Set();
+  for(const cc of order){try{const j=await jget(`https://itunes.apple.com/search?entity=musicArtist&limit=8&country=${cc}&term=${encodeURIComponent(q)}`,6000);
+    (j.results||[]).forEach(x=>{const k=norm(x.artistName);if(!seen.has(k)){seen.add(k);out.push({n:x.artistName,g:x.primaryGenreName||''})}})}catch(e){}if(out.length>=5)break}
+  return out.slice(0,8)}
+function addFavArtist(n,g){S.artists=S.artists||[];if(S.artists.some(x=>norm(x.n)===norm(n))){toast('Уже в любимых');return false}
+  if(S.artists.length>=12){toast('Максимум 12 артистов');return false}S.artists.push({n,g:g||''});save();toast('Добавлено: '+n);haptic();return true}
+let artQT=null;
+$('#profHead').addEventListener('input',e=>{if(e.target.id!=='artQ')return;const q=e.target.value.trim();clearTimeout(artQT);
+  if(q.length<2){$('#artRes').innerHTML='';return}
+  artQT=setTimeout(async()=>{$('#artRes').innerHTML='<div class="skel"></div>';const r=await searchArtists(q);if($('#artQ')&&$('#artQ').value.trim()!==q)return;
+    $('#artRes').innerHTML=r.length?r.map((x,i)=>`<div class="ares"><div><b>${esc(x.n)}</b><small>${esc(x.g)}</small></div><button class="act add" data-addart="${i}">+</button></div>`).join(''):'<p class="hint">Ничего не нашлось</p>';
+    $('#artRes')._r=r},450)});
 $('#profHead').addEventListener('click',e=>{
+  if(e.target.closest('#addArtBtn')){$('#artSearchBox').innerHTML=`<div class="asearch"><input id="artQ" placeholder="Найди артиста: Земфира, Radiohead…" autocomplete="off"><div id="artRes"></div></div>`;$('#artQ').focus();return}
+  const ad=e.target.closest('[data-addart]');if(ad){const x=$('#artRes')._r[+ad.dataset.addart];if(x&&addFavArtist(x.n,x.g))renderProfile();return}
+  const da=e.target.closest('[data-delart]');if(da){S.artists.splice(+da.dataset.delart,1);save();renderProfile();return}
   if(e.target.closest('#anthemPlay')){const b=e.target.closest('#anthemPlay');if(!S.anthem||!S.anthem.p)return;
     if(!anthemAU.paused){anthemAU.pause();b.innerHTML=PLAY_SVG;return}
     try{stopTrack()}catch(_){}anthemAU.src=S.anthem.p;anthemAU.play().then(()=>{b.innerHTML=PAUSE_SVG}).catch(()=>toast('Не удалось включить превью'));
@@ -1577,7 +1622,7 @@ $('#addMoreBtn').onclick=()=>{$('#q').value='';show('albums')};
 $('#editGenres').onclick=()=>show('genres');$('#editMoods').onclick=()=>show('moods');
 $('#resetBtn').onclick=()=>$('#resetConfirm').style.display='block';
 $('#resetNo').onclick=()=>$('#resetConfirm').style.display='none';
-$('#resetYes').onclick=()=>{if(S.people&&S.people.joined&&canNet())api('sw_delete_me',{}).catch(()=>{});S={name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:S.motion||'b',status:'',anthem:null,listen:null,stats:{plays:0,waves:0,mutual:0},ach:[],people:{joined:false,mode:'friends',adult:false,visible:true}};save();stack=[];show('welcome',false)};
+$('#resetYes').onclick=()=>{if(S.people&&S.people.joined&&canNet())api('sw_delete_me',{}).catch(()=>{});S={name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:S.motion||'b',status:'',anthem:null,listen:null,stats:{plays:0,waves:0,mutual:0},ach:[],artists:[],people:{joined:false,mode:'friends',adult:false,visible:true}};save();stack=[];show('welcome',false)};
 // В режиме редактирования жанров/настроений после онбординга — кнопка "Готово"
 const _upd=updateNext;updateNext=function(){_upd();if(S.done&&(cur==='genres'||cur==='moods')){$('#nextBtn').textContent='Готово';$('#sticky').style.display='block'}};
 const _next=$('#nextBtn').onclick;$('#nextBtn').onclick=()=>{if(S.done&&(cur==='genres'||cur==='moods')){save();stack=[];show('library',false);return}_next()};
@@ -1666,6 +1711,8 @@ function renderRate(){
     <div class="rscore${R.done?' ok':''}"><svg class="okmark" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="num display" id="rNum">${R.val||'—'}</span><span class="word" id="rWord">${R.val?RATE_WORDS[R.val]:'Сколько из 10?'}</span></div>
     <div class="eq" id="eq">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button style="--n:${n}" data-v="${n}" aria-label="${n} из 10" class="${n<=R.val?'on':''}${n===R.val?' peak':''}"></button>`).join('')}</div>
     ${R.done?`<div class="rdone">
+      ${passEditor(albumKey(a))}
+      <button class="link" id="rEdit" style="display:block;margin:0 auto 6px">Изменить оценку</button>
       <div class="row"><button class="btn ghost" id="rShare">Поделиться оценкой</button><button class="btn" id="rNext">Следующий</button></div>
       ${R.val>=8&&!inFav?'<div class="spacer"></div><button class="btn ghost" id="rFav">Добавить в любимые</button>':''}
     </div>`:`<div class="row"><button class="btn ghost" id="rSkip">Не слушал(а)</button><button class="btn" id="rSave" ${R.val?'':'disabled'}>Оценить</button></div>`}
@@ -1686,9 +1733,12 @@ window.addEventListener('pointerup',()=>{eqDrag=false});
 $('#rateBody').addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;const a=R.cur;
   if(t.id==='rSkip'){S.rated[albumKey(a)]={r:0,ts:Date.now()};save();R.cur=null;renderRate();return}
-  if(t.id==='rSave'){S.rated[albumKey(a)]={r:R.val,ts:Date.now()};save();R.done=true;
+  if(t.dataset.st!==undefined){const v=S.rated[albumKey(a)];if(!v)return;v.st=v.st===t.dataset.st?'':t.dataset.st;save();haptic();
+    t.parentNode.querySelectorAll('[data-st]').forEach(b=>b.classList.toggle('on',b.dataset.st===v.st));return}
+  if(t.id==='rSave'){const k=albumKey(a),pv=S.rated[k]||{};S.rated[k]={r:R.val,ts:Date.now(),t:a.t,a:a.a,y:a.y||null,g:a.g||null,c:a.c,st:pv.st||'',rv:pv.rv||''};save();R.done=true;
     try{TG&&TG.HapticFeedback&&TG.HapticFeedback.notificationOccurred('success')}catch(_){}
     renderRate();if(S.motion==='b')pop($('#rNum'));return}
+  if(t.id==='rEdit'){R.done=false;renderRate();return}
   if(t.id==='rNext'){R.cur=null;renderRate();window.scrollTo(0,0);return}
   if(t.id==='rFav'){if(S.albums.length>=30){toast('Максимум 30 альбомов');return}
     S.albums.push({t:a.t,a:a.a,y:a.y||null,g:a.g||null,c:a.c,r:R.val});save();toast('Добавлено в любимые');t.remove();return}
@@ -1697,14 +1747,30 @@ $('#rateBody').addEventListener('click',e=>{
     if(inTG){try{TG.openTelegramLink('https://t.me/share/url?url='+encodeURIComponent(APP_LINK)+'&text='+encodeURIComponent(text));return}catch(_){}}
     copy(text+' '+APP_LINK,'Скопировано');return}
 });
+/* ============ MUSIC PASSPORT: статусы + рецензии ============ */
+const PASS=[['life','💫','Изменил мою жизнь'],['master','👑','Шедевр'],['fav','❤️','Любимый'],['under','💎','Недооценён'],['over','🎈','Переоценён'],['again','🔁','Переслушать']];
+const passOf=id=>PASS.find(p=>p[0]===id);
+function ratedAlbum(k,v){if(v&&v.t)return {t:v.t,a:v.a,y:v.y,g:v.g,c:v.c};if(k[0]==='c'){const x=CATALOG[+k.slice(1)];return x&&{t:x[0],a:x[1],y:x[2],g:x[3],c:+k.slice(1)}}return null}
+function passEditor(k){const v=(S.rated||{})[k]||{};
+  return `<div class="pass"><div class="hint">Статус в Music Passport</div><div class="pchips">${PASS.map(([id,ic,l])=>`<button class="chip ${v.st===id?'on':''}" data-st="${id}">${ic} ${l}</button>`).join('')}</div>
+  <textarea class="rev" id="rRev" data-k="${esc(k)}" maxlength="300" rows="3" placeholder="Короткая рецензия: что зацепило, что нет, с чем сравнить">${esc(v.rv||'')}</textarea><div class="revcnt"><span id="rRevN">${(v.rv||'').length}</span>/300</div></div>`}
+let revT=null;
+document.addEventListener('input',e=>{if(e.target.id!=='rRev')return;const k=e.target.dataset.k,v=(S.rated||{})[k];if(!v)return;v.rv=e.target.value.slice(0,300);$('#rRevN').textContent=v.rv.length;clearTimeout(revT);revT=setTimeout(save,700)});
+let PF='all';
 function renderRatedList(){
-  const el=$('#ratedWrap');const items=Object.entries(S.rated||{}).filter(([k,v])=>v&&v.r).sort((x,y)=>y[1].ts-x[1].ts);
-  if(!items.length){el.innerHTML='';return}
-  const byKey=k=>{if(k[0]==='c'){const x=CATALOG[+k.slice(1)];return x&&{t:x[0],a:x[1],y:x[2],g:x[3],c:+k.slice(1)}}return null};
-  el.innerHTML='<h2>Оценённые</h2><div class="results rlist">'+items.map(([k,v])=>{const a=byKey(k);if(!a)return '';
-    return `<div class="alb">${covBox(a)}<div class="meta"><div class="t">${esc(a.t)}</div><div class="a">${artL(a.a)} · ${RATE_WORDS[v.r]}</div></div><button class="rate set">${v.r}</button></div>`}).join('')+'</div>';
+  const el=$('#ratedWrap');const items=Object.entries(S.rated||{}).filter(([k,v])=>v&&v.r&&ratedAlbum(k,v)).sort((x,y)=>y[1].ts-x[1].ts);
+  if(!items.length){el.innerHTML='<h2>Music Passport</h2><p class="sub">Оценивай альбомы, отмечай статусы и пиши короткие рецензии — здесь соберётся история твоего вкуса.</p>';return}
+  const cnt={};items.forEach(([k,v])=>{if(v.st)cnt[v.st]=(cnt[v.st]||0)+1});const revs=items.filter(([k,v])=>v.rv).length;
+  if(PF!=='all'&&PF!=='rev'&&!cnt[PF])PF='all';
+  const list=items.filter(([k,v])=>PF==='all'||(PF==='rev'?v.rv:v.st===PF));
+  el.innerHTML=`<h2>Music Passport <span class="hint" style="font-weight:600">${items.length}</span></h2>
+  <div class="pfilter"><button class="chip ${PF==='all'?'on':''}" data-pf="all">Все ${items.length}</button>${revs?`<button class="chip ${PF==='rev'?'on':''}" data-pf="rev">✍️ Рецензии ${revs}</button>`:''}${PASS.filter(p=>cnt[p[0]]).map(([id,ic,l])=>`<button class="chip ${PF===id?'on':''}" data-pf="${id}">${ic} ${l} ${cnt[id]}</button>`).join('')}</div>
+  <div class="results rlist">`+list.map(([k,v])=>{const a=ratedAlbum(k,v);const p=passOf(v.st);
+    return `<div class="alb pas">${covBox(a)}<div class="meta"><div class="t">${esc(a.t)}</div><div class="a">${artL(a.a)} · ${p?p[1]+' '+p[2]:RATE_WORDS[v.r]}</div>${v.rv?`<div class="rvs">«${esc(v.rv)}»</div>`:''}</div><button class="rate set" data-redo="${esc(k)}">${v.r}</button></div>`}).join('')+'</div>';
   hydrateCovers(el);
 }
+$('#ratedWrap').addEventListener('click',e=>{const f=e.target.closest('[data-pf]');if(f){PF=f.dataset.pf;haptic();renderRatedList();return}
+  const r=e.target.closest('[data-redo]');if(r){const k=r.dataset.redo,v=S.rated[k];const a=ratedAlbum(k,v);if(!a)return;R={cur:a,val:v.r,done:true};stack=[cur];show('rate',false);renderRate()}});
 $('#rateCta').onclick=()=>{R.cur=null;stack=['wave'];show('rate',false)};
 $('#rateBack').onclick=()=>{stack=[];show('wave',false)};
 
