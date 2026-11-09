@@ -266,6 +266,34 @@ body.has-mini .app{padding-bottom:calc(170px + var(--safe-b))}
 .about{font-size:14px;line-height:1.55;color:var(--silver);white-space:pre-line}
 .about.cut{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .src{font-size:11px;color:var(--muted);margin-top:8px}
+
+/* ===== Discover / свайпы ===== */
+.sw-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.sw-top h1{margin:0;font-family:Unbounded,Manrope,sans-serif;font-size:22px}
+.sw-top span{font-size:12px;color:var(--muted);font-family:Unbounded,Manrope,sans-serif}
+.sw-deck{position:relative;height:min(118vw,470px);margin:0 auto;touch-action:none}
+.sw-card{position:absolute;inset:0;border-radius:26px;overflow:hidden;background:#111;border:1px solid #222;box-shadow:0 20px 50px rgba(0,0,0,.6);transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .3s cubic-bezier(.2,.8,.2,1);user-select:none;-webkit-user-select:none;cursor:grab}
+.sw-card[data-d="0"]{z-index:3}.sw-card[data-d="1"]{z-index:2;filter:brightness(.7)}.sw-card[data-d="2"]{z-index:1;filter:brightness(.5)}
+.sw-card .cov{position:absolute;inset:0;width:100%;height:100%;border-radius:0}.sw-card .cov svg,.sw-card .cov img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.sw-grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.92) 100%);pointer-events:none}
+.sw-info{position:absolute;left:18px;right:18px;bottom:16px}.sw-info b{display:block;font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:22px;line-height:1.15;text-shadow:0 2px 12px #000}
+.sw-info small{display:block;font-size:14px;color:#ddd;margin-top:4px}
+.sw-tags{display:flex;gap:6px;margin-bottom:8px}.sw-tags span{font-size:11px;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid #444;backdrop-filter:blur(6px)}.sw-tags .new{border-color:#9b86e6;color:#d9cdff}
+.sw-prog{height:3px;border-radius:3px;background:rgba(255,255,255,.2);margin-top:12px;overflow:hidden}.sw-prog i{display:block;height:100%;width:0;background:#fff}
+.sw-stamp{position:absolute;top:26px;padding:6px 12px;border:3px solid;border-radius:12px;font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:22px;opacity:0;pointer-events:none;z-index:2}
+.sw-stamp.like{left:22px;color:#fff;border-color:#fff;transform:rotate(-14deg);background:rgba(255,120,40,.25)}
+.sw-stamp.nope{right:22px;color:#aaa;border-color:#aaa;transform:rotate(14deg)}
+.sw-stamp.fav{left:50%;top:40%;transform:translateX(-50%);color:#d9cdff;border-color:#d9cdff;background:rgba(120,90,200,.25)}
+.sw-btns{display:flex;justify-content:center;align-items:center;gap:14px;margin:18px 0 6px}
+.sw-btns button{width:56px;height:56px;border-radius:50%;border:1px solid #2c2c2c;background:#111;font-size:22px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.sw-btns button:active{transform:scale(.88)}.sw-btns .big{width:68px;height:68px;font-size:28px}.sw-btns .sm{width:44px;height:44px;font-size:16px;color:var(--muted)}
+#swYes{background:#fff;color:#000;border-color:#fff}#swFav{color:#d9cdff;border-color:#4a3d70}
+#swSound.on{color:#fff;border-color:#fff}
+.swcta{margin-top:12px}.swcta .swic{width:52px;height:52px;border-radius:12px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:26px;flex:none}
+.sw-hint{text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px}
+.sw-fin{text-align:center;padding:10px 0 4px}.sw-st{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 16px}.sw-st b{display:block;font-family:Unbounded,Manrope,sans-serif;font-size:20px}.sw-st span{font-size:11px;color:var(--muted)}
+#swLikes h3{font-size:17px;margin:18px 0 8px;display:flex;justify-content:space-between}#swLikes h3 small{font-size:12px;color:var(--muted)}
+.tabs button{font-size:10.5px}
+
 /* ===== Маскот ===== */
 .mz{display:block;width:100%;height:auto;overflow:visible;--rim:#cdb9ff;--glow:#a98bff}
 .mz .fur{fill:url(#mzb);stroke:var(--rim);stroke-width:1.3;stroke-opacity:.75;filter:url(#mzg)}
@@ -662,12 +690,23 @@ p.sub{color:var(--muted);margin:0 0 18px}
     <div class="drop" id="dropCard"></div>
     <div class="quests" id="quests"></div>
     <div id="mzDaily"></div>
+    <button class="ratecta swcta" id="swCta"><span class="swic">🃏</span><span><b>Свайпни 10 альбомов</b><small>Новая музыка за 2 минуты · до +50 XP</small></span></button>
     <div class="spacer"></div>
     <button class="ratecta" id="rateCta"></button>
     <div class="spacer"></div>
     <button class="btn ghost" id="toPeopleBtn">Найти людей на моей волне</button>
     <div class="spacer"></div>
     <button class="btn ghost" id="toMatchBtn">Сравнить с другом</button>
+  </section>
+
+  <!-- Discover -->
+  <section class="screen" id="s-discover">
+    <div class="sw-top"><h1>Открытия</h1><span id="swCount"></span></div>
+    <div class="sw-deck" id="swDeck"></div>
+    <div id="swEnd"></div>
+    <div class="sw-btns" id="swBtns"><button class="sm" id="swUndo" aria-label="Вернуть">↺</button><button id="swNo" aria-label="Мимо">✕</button><button class="big" id="swYes" aria-label="Огонь">🔥</button><button id="swFav" aria-label="В любимые">★</button><button class="sm" id="swSound" aria-label="Звук">♪</button></div>
+    <div class="sw-hint">Свайп вправо — огонь, влево — мимо, вверх — в любимые. Тап по обложке — 15 сек превью</div>
+    <div id="swLikes"></div>
   </section>
 
   <!-- 5. Match -->
@@ -727,8 +766,9 @@ p.sub{color:var(--muted);margin:0 0 18px}
 
 <nav class="tabs" id="tabs"><div class="inner">
   <button data-tab="wave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12c2 0 2-6 4-6s2 12 4 12 2-14 4-14 2 10 4 10 2-4 4-4"/></svg>Моя волна</button>
+  <button data-tab="discover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="5" y="3.5" width="12" height="15" rx="2.5" transform="rotate(-8 11 11)"/><path d="M15.5 7.2l3.3.5c1.3.2 2.2 1.4 2 2.7l-1.4 9c-.2 1.3-1.4 2.2-2.7 2l-6.4-1"/></svg>Открытия</button>
   <button data-tab="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14c3 0 5.5 1.8 5.5 4.6"/></svg>Люди<span class="badge" id="tabBadge" style="display:none"></span></button>
-  <button data-tab="match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>Совместимость</button>
+  <button data-tab="match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>Сравнить</button>
   <button data-tab="library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg>Профиль</button>
 </div></nav>
 <div class="sheet" id="sheet"><div class="sheet-in">
@@ -1036,7 +1076,8 @@ function show(id,push=true){
   if(push&&cur!==id)stack.push(cur);cur=id;
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+id));
   const onb=['genres','moods','albums'].includes(id)&&!S.done;
-  const tab=['wave','people','match','library','rate'].includes(id)||(id==='albums'&&S.done);
+  if(id!=='discover'&&PLAY.src==='swipe'){try{AU.pause()}catch(e){}}
+  const tab=['wave','discover','people','match','library','rate'].includes(id)||(id==='albums'&&S.done);
   $('#tabs').classList.toggle('on',tab&&id!=='albums');
   $('#sticky').style.display=(onb||(id==='albums'&&S.done))?'block':'none';
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
@@ -1091,6 +1132,7 @@ function render(id){
     if(tgName&&!S.name){S.name=tgName.slice(0,16)}
     $('#nameWrap').style.display=tgName?'none':'block';$('#nameInput').value=S.name||'';
   }
+  if(id==='discover')renderDiscover();
   if(id==='welcome'){const w=$('#wmz');if(w&&!w.innerHTML)w.innerHTML=mascot('groove',{disc:true})}
   if(id==='genres'){chipList($('#genreChips'),GENRES,S.genres,5);$('#tipGenres').innerHTML=S.done?'':mzTip('hi',`Привет${S.name?', '+esc(S.name):''}! Я ${MZ_NAME}. Выбери жанры — по ним найду тех, кто на твоей волне`)}
   if(id==='moods'){chipList($('#moodChips'),MOODS,S.moods,4);$('#tipMoods').innerHTML=S.done?'':mzTip('think','А теперь вайб. Под какое настроение ты обычно включаешь музыку?','sm')}
@@ -1784,6 +1826,7 @@ const ACH=[
   ['review','✒️','Рецензент','Написал 3 рецензии',s=>Object.values(s.rated||{}).filter(v=>v&&v.rv&&v.rv.length>=20).length>=3],
   ['fans','🎤','Фанат','5 любимых артистов',s=>(s.artists||[]).length>=5],
   ['talk','💬','Разговорчивый','10 сообщений',s=>(s.stats&&s.stats.msgs||0)>=10],
+  ['swiper','🃏','Свайпер','3 сессии в «Открытиях»',s=>(s.stats&&s.stats.swSess||0)>=3],
   ['streak7','🔥','Неделя в огне','Серия 7 дней',s=>(s.streak&&s.streak.best||0)>=7],
   ['lvl5','🏅','Меломан','Достиг 5 уровня',s=>lvlOf(s.xp||0).n>=5],
   ['wave','〰️','Первая волна','Отправил волну',s=>(s.stats&&s.stats.waves||0)>=1],
@@ -1910,6 +1953,7 @@ $('#addMoreBtn').onclick=()=>{$('#q').value='';show('albums')};
 $('#editGenres').onclick=()=>show('genres');$('#editMoods').onclick=()=>show('moods');
 $('#fsBtn').onclick=()=>{S.noFull=!S.noFull;save();$('#fsBtn').textContent=S.noFull?'Полный экран: выкл':'Полный экран: вкл';
   try{if(S.noFull&&TG&&TG.isFullscreen)TG.exitFullscreen();else if(!S.noFull&&TG&&TG.requestFullscreen&&TG.isVersionAtLeast('8.0'))TG.requestFullscreen()}catch(e){}haptic()};
+$('#swCta').onclick=()=>{show('discover',false)};
 $('#resetBtn').onclick=()=>$('#resetConfirm').style.display='block';
 $('#resetNo').onclick=()=>$('#resetConfirm').style.display='none';
 $('#resetYes').onclick=()=>{if(S.people&&S.people.joined&&canNet())api('sw_delete_me',{}).catch(()=>{});S={name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:S.motion||'b',status:'',anthem:null,listen:null,stats:{plays:0,waves:0,mutual:0},ach:[],artists:[],people:{joined:false,mode:'friends',adult:false,visible:true}};save();stack=[];show('welcome',false)};
@@ -2149,7 +2193,7 @@ function lvlOf(xp){let n=0;while(xp>=lvlNeed(n+1))n++;return {n:n+1,name:LEVELS[
 const dayKey=(t)=>{const d=t?new Date(t):new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const dayStart=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()};
 function totals(){const rv=Object.values(S.rated||{}).filter(v=>v&&v.r);const st=S.stats||{};
-  return {rated:rv.length,reviews:rv.filter(v=>v.rv&&v.rv.length>=20).length,plays:st.plays||0,waves:st.waves||0,mutual:st.mutual||0,msgs:st.msgs||0,favs:S.albums.length,artists:(S.artists||[]).length,artOpen:st.artOpen||0}}
+  return {rated:rv.length,reviews:rv.filter(v=>v.rv&&v.rv.length>=20).length,plays:st.plays||0,waves:st.waves||0,mutual:st.mutual||0,msgs:st.msgs||0,favs:S.albums.length,artists:(S.artists||[]).length,artOpen:st.artOpen||0,swipes:st.swipes||0}}
 const XPV={rated:20,reviews:30,plays:2,waves:15,mutual:50,msgs:3,favs:10,artists:10,artOpen:5};
 const XPCAP={plays:20,msgs:30,artOpen:25};
 const QUESTS={
@@ -2160,6 +2204,7 @@ const QUESTS={
   review:['Напиши рецензию (от 20 знаков)',1,()=>todayCnt('reviews')],
   artist:['Открой страницу артиста',1,()=>todayCnt('artOpen')],
   fav:['Добавь альбом в любимые',1,()=>todayCnt('favs')],
+  swipe:['Пролистай 10 альбомов в «Открытиях»',10,()=>todayCnt('swipes')],
   wave:['Отправь волну',1,()=>todayCnt('waves'),'net'],
   msg:['Напиши кому-нибудь в чат',1,()=>todayCnt('msgs'),'net'],
 };
@@ -2245,6 +2290,77 @@ $('#s-wave').addEventListener('click',e=>{
   if(e.target.closest('#hud')){show('library')}
 },true);
 setTimeout(()=>{AU.addEventListener('play',()=>{const p=$('#dropPlay');if(p&&PLAY.a&&sameA(PLAY.a,dropAlbum()))p.innerHTML=PAUSE_SVG});AU.addEventListener('pause',()=>{const p=$('#dropPlay');if(p)p.innerHTML=PLAY_SVG})},0);
+
+/* ============ DISCOVER: свайп-режим (как Tinder, но для альбомов) ============ */
+const SW={deck:[],i:0,sess:{like:0,skip:0,fav:0,xp:0},hist:[],sound:false,busy:false};
+const SW_SESSION=10;
+function swCands(){const mine=new Set(S.albums.map(albumKey)),rated=S.rated||{},seen=S.seen||{};
+  const drop=dropAlbum&&dropAlbum();const dk=drop?albumKey(drop):'';
+  return CATALOG.map((x,i)=>({t:x[0],a:x[1],y:x[2],g:x[3],c:i})).filter(a=>{const k=albumKey(a);return !mine.has(k)&&!rated[k]&&!seen[k]&&k!==dk})}
+function swBuild(){const c=swCands();const r=seeded('sw|'+Date.now());const near=c.filter(a=>S.genres.includes(a.g)),far=c.filter(a=>!S.genres.includes(a.g));
+  const sh=arr=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr};sh(near);sh(far);
+  const out=[];while(out.length<SW_SESSION&&(near.length||far.length)){const pickFar=far.length&&(!near.length||r()<.35);out.push(pickFar?far.shift():near.shift())}
+  SW.deck=out;SW.i=0;SW.sess={like:0,skip:0,fav:0,xp:0};SW.hist=[]}
+function swCard(a,depth){const gname=(GENRES.find(x=>x[0]===a.g)||[0,a.g])[1];const out=!S.genres.includes(a.g);
+  return `<div class="sw-card" data-d="${depth}" style="--d:${depth}">${covBox(a)}<div class="sw-grad"></div>
+  <div class="sw-stamp like">ОГОНЬ</div><div class="sw-stamp nope">МИМО</div><div class="sw-stamp fav">В ЛЮБИМЫЕ</div>
+  <div class="sw-info"><div class="sw-tags">${gname?`<span>${esc(gname)}</span>`:''}${out?'<span class="new">новый для тебя</span>':''}</div><b>${esc(a.t)}</b><small>${artL(a.a)}${a.y?' · '+a.y:''}</small>
+  <div class="sw-prog"><i></i></div></div></div>`}
+function renderDiscover(){const el=$('#swDeck');if(!el)return;
+  if(!SW.deck.length||SW.i>=SW.deck.length&&!SW.done){if(!SW.deck.length)swBuild()}
+  $('#swCount').textContent=SW.deck.length?Math.min(SW.i+1,SW.deck.length)+' / '+SW.deck.length:'';
+  if(SW.i>=SW.deck.length){swFinish();return}
+  const cards=SW.deck.slice(SW.i,SW.i+3).map((a,k)=>swCard(a,k)).reverse().join('');
+  el.innerHTML=cards;el.style.display='block';hydrateCovers(el);$('#swBtns').style.display='flex';$('#swEnd').innerHTML='';
+  el.querySelectorAll('.cov img').forEach(im=>{const s=im.getAttribute('src');if(s)im.src=s.replace('300x300bb','600x600bb')});
+  swBind();if(SW.sound)swPlay();renderLikes()}
+function swTop(){return $('#swDeck .sw-card[data-d="0"]')}
+function swBind(){const c=swTop();if(!c)return;let sx=0,sy=0,dx=0,dy=0,drag=false,moved=false;
+  c.addEventListener('pointerdown',e=>{if(e.target.closest('[data-artist]'))return;drag=true;moved=false;sx=e.clientX;sy=e.clientY;c.setPointerCapture(e.pointerId);c.style.transition='none'});
+  c.addEventListener('pointermove',e=>{if(!drag)return;dx=e.clientX-sx;dy=e.clientY-sy;if(Math.abs(dx)+Math.abs(dy)>6)moved=true;
+    c.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/18}deg)`;
+    c.querySelector('.like').style.opacity=Math.max(0,Math.min(1,dx/90));c.querySelector('.nope').style.opacity=Math.max(0,Math.min(1,-dx/90));c.querySelector('.fav').style.opacity=Math.max(0,Math.min(1,-dy/110))*(Math.abs(dx)<60?1:0)});
+  const end=()=>{if(!drag)return;drag=false;c.style.transition='';
+    if(dx>90)swGo('like');else if(dx<-90)swGo('skip');else if(dy<-110&&Math.abs(dx)<70)swGo('fav');
+    else{c.style.transform='';c.querySelectorAll('.sw-stamp').forEach(s=>s.style.opacity=0);if(!moved)swToggle()}dx=dy=0};
+  c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end)}
+function swGo(kind){if(SW.busy)return;const c=swTop();const a=SW.deck[SW.i];if(!c||!a)return;SW.busy=true;
+  const k=albumKey(a);const fly={like:'translate(140%,-6%) rotate(24deg)',skip:'translate(-140%,-6%) rotate(-24deg)',fav:'translate(0,-140%) scale(.9)'}[kind];
+  c.querySelector('.'+(kind==='like'?'like':kind==='skip'?'nope':'fav')).style.opacity=1;c.style.transition='transform .35s ease, opacity .35s';c.style.transform=fly;c.style.opacity=0;
+  const g=S.g;const prev={k,rated:S.rated[k],seen:(S.seen||{})[k],fav:kind==='fav'};
+  if(kind==='skip'){S.seen=S.seen||{};S.seen[k]=Date.now();SW.sess.skip++}
+  else{S.rated[k]={r:kind==='fav'?9:8,ts:Date.now(),t:a.t,a:a.a,y:a.y||null,g:a.g||null,c:a.c,st:kind==='fav'?'fav':'',rv:'',sw:1};g.last.rated=(g.last.rated||0)+1;
+    if(kind==='fav'){S.albums.push(Object.assign({},a));g.last.favs=(g.last.favs||0)+1;SW.sess.fav++}else SW.sess.like++}
+  S.stats=S.stats||{};S.stats.swipes=(S.stats.swipes||0)+1;const used=(g.xpDay.sw||0);const x=Math.min(kind==='skip'?2:5,Math.max(0,80-used));g.xpDay.sw=used+x;if(x){S.xp=(S.xp||0)+x;SW.sess.xp+=x}
+  SW.hist.push(prev);try{TG.HapticFeedback.impactOccurred(kind==='skip'?'light':'medium')}catch(_){}
+  save();setTimeout(()=>{SW.i++;SW.busy=false;renderDiscover()},300)}
+function swUndo(){const p=SW.hist.pop();if(!p||SW.i===0)return;SW.i--;
+  if(p.rated===undefined)delete S.rated[p.k];else S.rated[p.k]=p.rated;if(p.seen===undefined&&S.seen)delete S.seen[p.k];
+  if(p.fav){const j=S.albums.findIndex(x=>albumKey(x)===p.k);if(j>=0)S.albums.splice(j,1)}save();renderDiscover();haptic()}
+let swTimer=null;
+async function swPlay(){const a=SW.deck[SW.i];if(!a)return;const myI=SW.i;clearTimeout(swTimer);
+  let info=null;try{info=await albumInfo(a)}catch(e){}if(SW.i!==myI||cur!=='discover')return;
+  const tr=info&&info.tracks?info.tracks.filter(t=>t.p):[];if(!tr.length){toast('У этого альбома нет превью');return}
+  const t=tr[Math.min(1,tr.length-1)];try{anthemAU.pause()}catch(e){}PLAY={a,info,i:info.tracks.indexOf(t),src:'swipe'};AU.src=t.p;AU.currentTime=0;AU.play().catch(()=>{});
+  swTimer=setTimeout(()=>{if(PLAY.src==='swipe'&&!AU.paused)AU.pause()},15000)}
+function swToggle(){if(!SW.sound){SW.sound=true;swPlay();$('#swSound').classList.add('on');return}
+  if(PLAY.src==='swipe'&&!AU.paused)AU.pause();else swPlay()}
+function swFinish(){$('#swDeck').innerHTML='';$('#swDeck').style.display='none';$('#swBtns').style.display='none';if(PLAY.src==='swipe')try{AU.pause()}catch(e){}
+  const s=SW.sess;$('#swCount').textContent='';
+  $('#swEnd').innerHTML=`<div class="sw-fin"><div class="mzi big" data-mz="party">${mascot('party',{disc:true})}</div><div class="display lvn" style="font-size:26px">Сессия готова!</div>
+  <div class="sw-st"><div><b>${s.like}</b><span>🔥 огонь</span></div><div><b>${s.fav}</b><span>★ в любимые</span></div><div><b>${s.skip}</b><span>мимо</span></div><div><b>+${s.xp}</b><span>XP</span></div></div>
+  <button class="btn" id="swMore">Ещё ${SW_SESSION}</button></div>`;confetti();S.stats.swSess=(S.stats.swSess||0)+1;save();renderLikes()}
+function renderLikes(){const el=$('#swLikes');if(!el)return;const items=Object.entries(S.rated||{}).filter(([k,v])=>v&&v.sw&&v.r>=8).sort((x,y)=>y[1].ts-x[1].ts).slice(0,20);
+  if(!items.length){el.innerHTML='';return}
+  el.innerHTML=`<h3>Тебе зашло <small>${items.length}</small></h3><div class="hscroll">${items.map(([k,v])=>{const a=ratedAlbum(k,v);return `<div class="dcard" data-swopen="${esc(k)}"><div class="dc">${covBox(a)}</div><b>${esc(a.t)}</b><span>${esc(a.a)}</span></div>`}).join('')}</div>`;hydrateCovers(el)}
+$('#s-discover').addEventListener('click',e=>{
+  if(e.target.closest('.sw-card')&&!e.target.closest('[data-artist]')){e.stopPropagation();return}
+  const b=e.target.closest('button');const o=e.target.closest('[data-swopen]');
+  if(o){e.stopPropagation();const v=S.rated[o.dataset.swopen];const a=ratedAlbum(o.dataset.swopen,v);if(a)openAlbum(a);return}
+  if(!b)return;
+  if(b.id==='swNo')swGo('skip');else if(b.id==='swYes')swGo('like');else if(b.id==='swFav')swGo('fav');else if(b.id==='swUndo')swUndo();
+  else if(b.id==='swSound')swToggle();else if(b.id==='swMore'){swBuild();renderDiscover()}},true);
+AU.addEventListener('timeupdate',()=>{if(PLAY.src!=='swipe')return;const p=$('#swDeck .sw-card[data-d="0"] .sw-prog i');if(p)p.style.width=Math.min(100,AU.currentTime/15*100)+'%'});
 
 /* ============ ПОЛНЫЙ ЭКРАН (Telegram 8.0+) ============ */
 function applySafe(){if(!TG)return;const sa=TG.safeAreaInset||{},ca=TG.contentSafeAreaInset||{};const r=document.documentElement.style;
