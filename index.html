@@ -6,7 +6,7 @@
 <title>SAME WAVE</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#000;--card:#0e0e0e;--card2:#161616;--line:#262626;--muted:#8a8a8a;--silver:#c9c9c9;--fg:#f2f2f2;
@@ -266,6 +266,54 @@ body.has-mini .app{padding-bottom:calc(170px + var(--safe-b))}
 .about{font-size:14px;line-height:1.55;color:var(--silver);white-space:pre-line}
 .about.cut{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .src{font-size:11px;color:var(--muted);margin-top:8px}
+/* ===== Геймификация ===== */
+.hud{display:flex;align-items:center;gap:10px;padding:4px 0 2px;cursor:pointer}
+.hud .lv{width:40px;height:40px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;flex:none;font-family:Unbounded,Manrope,sans-serif}
+.hud .lv b{font-size:16px;font-weight:700}
+.lvm{flex:1;min-width:0}.lvt{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.lvt span{font-weight:700;font-size:14px}.lvt small{font-size:11px;color:var(--muted)}
+.xpb{height:6px;border-radius:6px;background:#1c1c1c;margin-top:5px;overflow:hidden}.xpb i{display:block;height:100%;background:linear-gradient(90deg,#9a9a9a,#fff);border-radius:6px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.stk{display:flex;align-items:center;gap:3px;padding:6px 10px;border-radius:999px;border:1px solid #2a2a2a;font-family:Unbounded,Manrope,sans-serif;filter:grayscale(1);opacity:.6}
+.stk.on{filter:none;opacity:1;border-color:#4a3a20;background:rgba(255,140,0,.08)}.stk b{font-size:15px}.stk .fl{font-size:16px}
+.stk.on .fl{animation:flick 1.6s ease-in-out infinite}@keyframes flick{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.15) rotate(3deg)}}
+.fz{font-size:12px;color:#9cc7ff;padding:6px 8px;border-radius:999px;border:1px solid #1f2b3a}
+.drop{margin-top:18px;padding:16px;border-radius:22px;background:linear-gradient(160deg,#171717,#0b0b0b);border:1px solid #262626;position:relative;overflow:hidden}
+.drop::before{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(120deg,#fff3,transparent 40%,transparent 60%,#fff2);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.drop-h{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.2em;color:var(--silver)}.drop-h .dleft{letter-spacing:0;font-size:11px;color:var(--muted)}
+.drop-b{display:flex;gap:14px;align-items:center;margin-top:12px}
+.drop-c{position:relative;width:104px;height:104px;flex:none;cursor:pointer}.drop-c .cov{width:104px;height:104px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.drop-c .pb{position:absolute;right:-6px;bottom:-6px;width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.drop-c .pb svg{width:14px;height:14px}.drop-c .pb svg path{fill:#000}.drop-c .pb.ld{animation:pulse 1s infinite}
+.drop-m{min-width:0}.drop-m b{display:block;font-family:Unbounded,Manrope,sans-serif;font-weight:600;font-size:17px;line-height:1.2}.drop-m>span{display:block;font-size:13px;color:var(--silver);margin-top:4px}
+.drop-m em{display:inline-block;font-style:normal;font-size:11px;margin-top:8px;padding:3px 8px;border-radius:999px;border:1px solid #333;color:var(--muted)}
+.drop-r{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.drop-r button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 0 8px;border-radius:14px;background:#141414;border:1px solid #262626;font-size:11px;color:var(--silver);transition:transform .15s}
+.drop-r button span{font-size:24px}.drop-r button:active{transform:scale(.92);background:#1f1f1f}
+.drop-hint{text-align:center;margin-top:8px;font-size:12px}
+.drop-done{margin-top:14px;text-align:center;font-weight:700;padding:10px;border-radius:14px;background:#121212;animation:pop .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:none;opacity:1}}
+.quests{margin-top:14px;padding:14px 16px;border-radius:18px;border:1px solid #222;background:#0c0c0c}
+.q-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}.q-h span{font-size:12px;color:var(--muted)}
+.q{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #161616;font-size:14px}.q:first-of-type{border-top:0}
+.qc{width:22px;height:22px;border-radius:50%;border:1.5px solid #444;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.q.ok .qc{background:#fff;color:#000;border-color:#fff;animation:pop .35s}.q.ok .qt{color:var(--muted);text-decoration:line-through}
+.qt{flex:1}.qp{font-size:12px;color:var(--silver)}
+.xppop{position:fixed;left:50%;top:calc(60px + var(--safe-t));transform:translate(-50%,-10px);z-index:45;background:#fff;color:#000;font-weight:800;font-size:14px;padding:8px 14px;border-radius:999px;opacity:0;pointer-events:none;font-family:Unbounded,Manrope,sans-serif}
+.xppop.on{animation:xpup 1.5s cubic-bezier(.2,.8,.2,1)}
+@keyframes xpup{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.05)}25%{transform:translate(-50%,0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
+.confetti{position:fixed;inset:0;width:100%;height:100%;z-index:60;pointer-events:none}
+.plevel{display:flex;gap:12px;align-items:center;margin:14px 0 4px;padding:14px;border-radius:18px;border:1px solid #222;background:#0c0c0c}
+.plevel .lv{width:52px;height:52px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:20px;flex:none}
+.plevel .m{flex:1}.plevel small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+/* DNA: более плотная типографика + интерактивная волна */
+#dnaCard .arch{font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:24px;letter-spacing:-.01em;line-height:1.15}
+#dnaCard .who{font-family:Unbounded,Manrope,sans-serif;font-weight:500;font-size:13px;letter-spacing:.02em}
+#dnaCard .brand{font-family:Unbounded,Manrope,sans-serif;font-weight:600;font-size:11px;letter-spacing:.3em}
+#dnaCard .stats2 b{font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:20px}
+#dnaCard .tags span{font-weight:600}
+#dnaCard svg.sp{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.sp-hint{font-size:11px;color:var(--muted);margin-top:-8px;margin-bottom:6px;transition:opacity .5s}
+
+
 /* ===== Music Passport + любимые артисты ===== */
 .pass{margin:14px 0 6px;text-align:left}
 .pchips,.pfilter{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}
@@ -528,12 +576,15 @@ p.sub{color:var(--muted);margin:0 0 18px}
 
   <!-- 4. My wave (DNA) -->
   <section class="screen" id="s-wave">
+    <div class="hud" id="hud"></div>
     <div class="dna" id="dnaCard"></div>
     <div class="spacer"></div>
     <div class="row">
       <button class="btn" id="storyBtn">В сторис</button>
       <button class="btn ghost" id="shareBtn">Ссылкой</button>
     </div>
+    <div class="drop" id="dropCard"></div>
+    <div class="quests" id="quests"></div>
     <div class="spacer"></div>
     <button class="ratecta" id="rateCta"></button>
     <div class="spacer"></div>
@@ -637,6 +688,7 @@ p.sub{color:var(--muted);margin:0 0 18px}
   <div class="chat-pick" id="chatPick"></div>
   <form class="chat-bar" id="chatForm"><button type="button" class="cb-att" id="chatAttach" aria-label="Отправить трек">♪</button><input id="chatIn" maxlength="1000" placeholder="Сообщение" autocomplete="off"><button type="submit" class="cb-send" aria-label="Отправить">↑</button></form>
 </div></div>
+<div class="xppop" id="xpPop"></div>
 <div class="mini" id="mini"><div class="mini-prog" id="miniProg"></div><div class="cov" id="miniCov"></div><div class="mini-m"><b id="miniT"></b><span id="miniA"></span></div><button class="mini-b" id="miniPlay" aria-label="Пауза"></button><button class="mini-x" id="miniX" aria-label="Закрыть плеер">×</button></div>
 <div class="toast" id="toast"></div>
 <div class="ach-toast" id="achToast"></div>
@@ -784,7 +836,7 @@ async function findCover(a){
 const KEY='samewave_profile_v1';
 let S = {name:'',genres:[],moods:[],albums:[],done:false,rated:{},motion:'b',status:'',anthem:null,listen:null,stats:{plays:0,waves:0,mutual:0},ach:[],artists:[],people:{joined:false,mode:'friends',adult:false,visible:true}};
 function load(){try{const v=localStorage.getItem(KEY);if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}}
-function save(){S.people=S.people||{joined:false,mode:'friends',adult:false,visible:true};try{checkAch()}catch(e){}if(S.done&&S.people.joined)syncSoon();const v=JSON.stringify(S);try{localStorage.setItem(KEY,v)}catch(e){}
+function save(){S.people=S.people||{joined:false,mode:'friends',adult:false,visible:true};try{progressTick()}catch(e){}try{checkAch()}catch(e){}if(S.done&&S.people.joined)syncSoon();const v=JSON.stringify(S);try{localStorage.setItem(KEY,v)}catch(e){}
   try{if(inTG&&TG.CloudStorage)TG.CloudStorage.setItem(KEY,v)}catch(e){}}
 function cloudLoad(cb){try{if(inTG&&TG.CloudStorage&&TG.isVersionAtLeast&&TG.isVersionAtLeast('6.9')){TG.CloudStorage.getItem(KEY,(err,v)=>{if(!err&&v){try{S=Object.assign(S,JSON.parse(v))}catch(e){}}cb()});return}}catch(e){}cb()}
 
@@ -862,13 +914,14 @@ function spModel(seedStr){
   return bumps;
 }
 // T — время в секундах: волна медленно плывёт (дрейф горбов, дыхание амплитуды, бегущая рябь)
-function spLines(bumps,W_,H,T,L=30,N=90){
+function spLines(bumps,W_,H,T,L=30,N=90,imp){
   const lines=[];
   for(let i=0;i<L;i++){const t=i/(L-1);const pts=[];
     for(let j=0;j<=N;j++){const x=j/N;let y=0;
-      bumps.forEach(b=>{const c=b.c+(t-.5)*.16*b.s+.045*Math.sin(T*.21+b.ph);const w=b.w*(.85+.3*t)*(1+.08*Math.sin(T*.17+b.ph*1.7));
-        y+=b.a*(.35+.65*t)*(1+.16*Math.sin(T*.33+b.ph))*Math.exp(-((x-c)**2)/(2*w*w))});
-      y+=.05*(.25+.75*t)*Math.sin(x*8.5-T*.7+t*1.6)*Math.sin(Math.PI*x);
+      bumps.forEach(b=>{const c=b.c+(t-.5)*.16*b.s+.07*Math.sin(T*.45+b.ph);const w=b.w*(.85+.3*t)*(1+.12*Math.sin(T*.38+b.ph*1.7));
+        y+=b.a*(.35+.65*t)*(1+.26*Math.sin(T*.7+b.ph))*Math.exp(-((x-c)**2)/(2*w*w))});
+      y+=.07*(.25+.75*t)*Math.sin(x*8.5-T*1.6+t*1.6)*Math.sin(Math.PI*x)+.03*(.4+.6*t)*Math.sin(x*15+T*2.3-t*2)*Math.sin(Math.PI*x);
+      if(imp)imp.forEach(m=>{const a=m.age,dx=x-m.x,sp=.04+a*.55;y+=m.a*Math.exp(-a*1.9)*Math.cos(dx*26-a*11)*Math.exp(-(dx*dx)/(2*sp*sp))*(.35+.65*t)});
       pts.push([x*W_,-y*H*.45+(t-.5)*10])}
     lines.push([t,pts])}
   return lines;
@@ -888,11 +941,15 @@ let LIVE=null;
 function startLiveWave(svg){
   if(!svg)return;stopLiveWave();
   const bumps=spModel(svg.dataset.seed),W_=+svg.dataset.w,H=+svg.dataset.h,half=+svg.dataset.half,paths=[...svg.querySelectorAll('path')];
-  const t0=performance.now();let last=0;
+  const t0=performance.now();let last=0;const imp=[];
   const f=now=>{if(!LIVE||LIVE.svg!==svg)return;LIVE.raf=requestAnimationFrame(f);
-    if(document.hidden||!svg.isConnected||cur!=='wave'||now-last<41)return;last=now;
-    const ls=spLines(bumps,W_,H,(now-t0)/1000);ls.forEach(([t,pts],i)=>{if(paths[i])paths[i].setAttribute('d',spD(pts,half))})};
-  LIVE={svg,raf:requestAnimationFrame(f)};
+    if(document.hidden||!svg.isConnected||cur!=='wave'||now-last<(imp.length?16:33))return;last=now;
+    const T=(now-t0)/1000;for(let k=imp.length-1;k>=0;k--){imp[k].age=T-imp[k].t;if(imp[k].age>2.6)imp.splice(k,1)}
+    const ls=spLines(bumps,W_,H,T,30,imp.length?120:90,imp);ls.forEach(([t,pts],i)=>{if(paths[i])paths[i].setAttribute('d',spD(pts,half))})};
+  LIVE={svg,imp,t0,raf:requestAnimationFrame(f)};
+  if(!svg._tap){svg._tap=1;svg.addEventListener('pointerdown',e=>{const r=svg.getBoundingClientRect();const x=(e.clientX-r.left)/r.width;const y=(e.clientY-r.top)/r.height;
+    if(!LIVE||LIVE.svg!==svg)startLiveWave(svg);const L=LIVE;if(L.imp.length>=4)L.imp.shift();L.imp.push({x,t:(performance.now()-L.t0)/1000,age:0,a:(y<.5?-1:1)*(.55+Math.random()*.25)});
+    try{TG.HapticFeedback.impactOccurred('light')}catch(_){}const h=document.querySelector('.sp-hint');if(h)h.style.opacity=0;S.stats=S.stats||{};S.stats.splash=(S.stats.splash||0)+1})}
 }
 function stopLiveWave(){if(LIVE){cancelAnimationFrame(LIVE.raf);LIVE=null}}
 
@@ -968,6 +1025,7 @@ function render(id){
     const d=dna();
     $('#dnaCard').innerHTML=`<div class="brand display"><span>MUSIC DNA</span></div>
       ${soundprint(encodeProfile(S))}
+      ${(S.stats&&S.stats.splash>2)?'':'<div class="sp-hint">тапни по волне</div>'}
       <div class="who stg" style="--i:0">${esc(S.name||'Слушатель')}</div>
       <div class="arch display chars">${splitChars(d.arch)}</div>
       <div class="tags stg" style="--i:2">${d.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
@@ -975,7 +1033,7 @@ function render(id){
       <div class="stats2 stg" style="--i:4"><div><b>${d.count}</b><span>альбомов</span></div><div><b>${d.era}</b><span>главная эпоха</span></div><div><b>${d.avg}</b><span>средняя оценка</span></div></div>`;
   }
   if(id==='match'){$('#myCode').textContent=encodeProfile(S)}
-  if(id==='wave'){hydrateCovers($('#dnaCard'));renderRateCta()}
+  if(id==='wave'){hydrateCovers($('#dnaCard'));rollDay();renderHud();renderDrop();renderQuests();renderRateCta()}
   if(id==='rate')renderRate();
   if(id==='people'){renderPeople()}
   if(id==='library'){renderProfile();drawMine($('#libAlbums'));$('#resetConfirm').style.display='none';renderRatedList();renderMotionChips()}
@@ -1570,7 +1628,7 @@ async function openArtist(name){
   name=String(name||'').trim();if(!name)return;const sh=$('#artSheet');lift(sh);
   try{$('#albVid').pause()}catch(e){}
   if(sh.classList.contains('on')&&ART.n&&norm(ART.n)===norm(name))return;
-  ART={n:name,d:null,vids:null};sh.classList.add('on');sh.querySelector('.sheet-in').scrollTop=0;haptic();
+  ART={n:name,d:null,vids:null};S.stats=S.stats||{};S.stats.artOpen=(S.stats.artOpen||0)+1;save();sh.classList.add('on');sh.querySelector('.sheet-in').scrollTop=0;haptic();
   $('#artN').textContent=name;$('#artM').textContent='';$('#artActs').innerHTML='';setArtVideo(null);
   $('#artHero').className='art-hero one';$('#artHero').innerHTML=`<div class="ini">${esc((name[0]||'?').toUpperCase())}</div>`;$('#artAmb').style.backgroundImage='none';
   $('#artBody').innerHTML='<div class="skel"></div><div class="skel" style="width:80%"></div><div class="skel" style="width:90%"></div><div class="skel" style="width:60%"></div>';
@@ -1648,6 +1706,8 @@ const ACH=[
   ['review','✒️','Рецензент','Написал 3 рецензии',s=>Object.values(s.rated||{}).filter(v=>v&&v.rv&&v.rv.length>=20).length>=3],
   ['fans','🎤','Фанат','5 любимых артистов',s=>(s.artists||[]).length>=5],
   ['talk','💬','Разговорчивый','10 сообщений',s=>(s.stats&&s.stats.msgs||0)>=10],
+  ['streak7','🔥','Неделя в огне','Серия 7 дней',s=>(s.streak&&s.streak.best||0)>=7],
+  ['lvl5','🏅','Меломан','Достиг 5 уровня',s=>lvlOf(s.xp||0).n>=5],
   ['wave','〰️','Первая волна','Отправил волну',s=>(s.stats&&s.stats.waves||0)>=1],
   ['mutual','🤝','На одной волне','Взаимная волна',s=>(s.stats&&s.stats.mutual||0)>=1],
 ];
@@ -1685,6 +1745,7 @@ function renderProfile(){
     <div class="status ${S.status?'':'empty'}" id="statusBox">${S.status?esc(S.status):'Добавь статус: что у тебя сейчас в наушниках?'}</div>
     ${S.listen?`<div class="nowl"><span class="eqm"><i></i><i></i><i></i></span>Недавно слушал: ${esc(S.listen.t)} — ${artL(S.listen.ar)} · ${ago(S.listen.ts)}</div>`:''}
   </div>
+  ${(()=>{const L=lvlOf(S.xp||0),p=Math.round(((S.xp||0)-L.from)/(L.to-L.from)*100);return `<div class="plevel"><div class="lv">${L.n}</div><div class="m"><b>${esc(L.name)}</b><div class="xpb"><i style="width:${p}%"></i></div><small>${S.xp||0} XP · до уровня ${L.n+1}: ${L.to-(S.xp||0)} · серия ${streakAlive()} 🔥 · рекорд ${(S.streak&&S.streak.best)||0}</small></div></div>`})()}
   <div class="pstats"><div><b>${S.albums.length}</b><span>любимых</span></div><div><b>${rs.length}</b><span>оценок</span></div><div><b>${rs.length?(rs.reduce((a,v)=>a+v.r,0)/rs.length).toFixed(1):'—'}</b><span>средняя</span></div><div><b>${(S.ach||[]).length}</b><span>наград</span></div></div>
   ${an?`<div class="anthem" id="anthemCard">${covBox({t:an.al,a:an.ar,y:an.y,c:an.c})}<div class="meta"><small>Трек-гимн</small><b>${esc(an.t)}</b><div class="a">${artL(an.ar)} · ${esc(an.al)}</div></div><button class="pb" id="anthemPlay" aria-label="Слушать гимн">${PLAY_SVG}</button></div>`
      :`<div class="anthem" style="border-style:dashed"><div class="meta"><small>Трек-гимн</small><b>Пока не выбран</b><div class="a">Открой альбом, включи трек и нажми «Сделать гимном»</div></div></div>`}
@@ -1924,6 +1985,110 @@ $('#ratedWrap').addEventListener('click',e=>{const f=e.target.closest('[data-pf]
   const r=e.target.closest('[data-redo]');if(r){const k=r.dataset.redo,v=S.rated[k];const a=ratedAlbum(k,v);if(!a)return;R={cur:a,val:v.r,done:true};stack=[cur];show('rate',false);renderRate()}});
 $('#rateCta').onclick=()=>{R.cur=null;stack=['wave'];show('rate',false)};
 $('#rateBack').onclick=()=>{stack=[];show('wave',false)};
+
+/* ============ ГЕЙМИФИКАЦИЯ: XP, уровни, серия, Daily Drop, задания ============ */
+const LEVELS=['Новичок','Слушатель','Диггер','Коллекционер','Меломан','Куратор','Критик','Знаток','Звукоискатель','Легенда сцены'];
+const lvlNeed=n=>50*n*(n+1); // XP, чтобы дойти до уровня n+1
+function lvlOf(xp){let n=0;while(xp>=lvlNeed(n+1))n++;return {n:n+1,name:LEVELS[Math.min(n,LEVELS.length-1)],from:lvlNeed(n),to:lvlNeed(n+1)}}
+const dayKey=(t)=>{const d=t?new Date(t):new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const dayStart=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()};
+function totals(){const rv=Object.values(S.rated||{}).filter(v=>v&&v.r);const st=S.stats||{};
+  return {rated:rv.length,reviews:rv.filter(v=>v.rv&&v.rv.length>=20).length,plays:st.plays||0,waves:st.waves||0,mutual:st.mutual||0,msgs:st.msgs||0,favs:S.albums.length,artists:(S.artists||[]).length,artOpen:st.artOpen||0}}
+const XPV={rated:20,reviews:30,plays:2,waves:15,mutual:50,msgs:3,favs:10,artists:10,artOpen:5};
+const XPCAP={plays:20,msgs:30,artOpen:25};
+const QUESTS={
+  drop:['Оцени Daily Drop',1,()=>S.drop&&S.drop.day===dayKey()&&S.drop.r?1:0],
+  rate2:['Оцени 2 альбома',2,()=>todayCnt('rated')],
+  off:['Оцени альбом не из твоих жанров',1,()=>Object.values(S.rated||{}).filter(v=>v&&v.r&&v.ts>=dayStart()&&v.g&&!S.genres.includes(v.g)).length],
+  play3:['Послушай 3 превью',3,()=>todayCnt('plays')],
+  review:['Напиши рецензию (от 20 знаков)',1,()=>todayCnt('reviews')],
+  artist:['Открой страницу артиста',1,()=>todayCnt('artOpen')],
+  fav:['Добавь альбом в любимые',1,()=>todayCnt('favs')],
+  wave:['Отправь волну',1,()=>todayCnt('waves'),'net'],
+  msg:['Напиши кому-нибудь в чат',1,()=>todayCnt('msgs'),'net'],
+};
+function todayCnt(k){const g=S.g;if(!g||!g.base)return 0;return Math.max(0,(totals()[k]||0)-(g.base[k]||0))}
+function seeded(str){return rng(fnv(str))}
+function rollDay(){const today=dayKey();S.g=S.g||{};
+  if(S.g.day===today)return;
+  const r=seeded(today+'|'+(S.name||''));const net=S.people&&S.people.joined;
+  const pool=Object.keys(QUESTS).filter(k=>k!=='drop'&&(!QUESTS[k][3]||net));
+  const pick=[];while(pick.length<2&&pool.length)pick.push(pool.splice(Math.floor(r()*pool.length),1)[0]);
+  S.g={day:today,base:totals(),last:totals(),q:['drop',...pick],qd:[],all:false,xpDay:{}};
+  pickDrop();
+}
+function pickDrop(){const today=dayKey();if(S.drop&&S.drop.day===today)return;
+  const mine=new Set(S.albums.map(albumKey)),rated=S.rated||{};const r=seeded('drop|'+today+'|'+(S.name||''));
+  const cands=CATALOG.map((x,i)=>({x,i})).filter(o=>{const a={t:o.x[0],a:o.x[1],y:o.x[2],g:o.x[3],c:o.i};return !mine.has(albumKey(a))&&!rated[albumKey(a)]});
+  if(!cands.length){S.drop={day:today,i:-1};return}
+  const near=cands.filter(o=>S.genres.includes(o.x[3]));const src=(near.length&&r()<.7)?near:cands;
+  S.drop={day:today,i:src[Math.floor(r()*src.length)].i,r:0};
+}
+function addXP(n,why){if(!n)return;const before=lvlOf(S.xp||0).n;S.xp=(S.xp||0)+n;xpPop('+'+n+' XP'+(why?' · '+why:''));
+  const after=lvlOf(S.xp);if(after.n>before){setTimeout(()=>{confetti();toast('Новый уровень: '+after.n+' · '+after.name);try{TG.HapticFeedback.notificationOccurred('success')}catch(e){}},700)}}
+let inTick=false;
+function progressTick(){ // вызывается из save(): начисляет XP за прирост действий и закрывает задания
+  if(inTick||!S.done)return;inTick=true;
+  try{rollDay();const t=totals(),g=S.g;let gain=0;
+    Object.keys(XPV).forEach(k=>{const d=(t[k]||0)-(g.last[k]||0);if(d>0){let x=d*XPV[k];if(XPCAP[k]){const used=g.xpDay[k]||0;x=Math.max(0,Math.min(x,XPCAP[k]-used));g.xpDay[k]=used+x}gain+=x}});
+    g.last=t;if(gain)addXP(gain);
+    g.q.forEach(id=>{const q=QUESTS[id];if(!q||g.qd.includes(id))return;if(q[2]()>=q[1]){g.qd.push(id);setTimeout(()=>{addXP(25,'задание');toast('Задание выполнено: '+q[0])},900)}});
+    if(!g.all&&g.qd.length>=g.q.length){g.all=true;setTimeout(()=>{addXP(50,'все задания');confetti()},1800)}
+    if(cur==='wave'){renderHud();renderQuests()}}
+  finally{inTick=false}}
+/* серия: засчитывается за оценку Daily Drop; «заморозка» спасает один пропущенный день */
+function bumpStreak(){const st=S.streak=S.streak||{n:0,last:'',fz:1,best:0};const today=dayKey();if(st.last===today)return false;
+  const y=dayKey(Date.now()-864e5),y2=dayKey(Date.now()-2*864e5);
+  if(st.last===y)st.n++;else if(st.last===y2&&st.fz>0){st.fz--;st.n++;toast('❄️ Заморозка спасла серию')}else st.n=1;
+  st.last=today;st.best=Math.max(st.best||0,st.n);if(st.n%7===0&&st.fz<2){st.fz++;setTimeout(()=>toast('+1 заморозка серии ❄️'),1500)}
+  return true}
+function streakAlive(){const st=S.streak;if(!st||!st.n)return 0;const today=dayKey(),y=dayKey(Date.now()-864e5),y2=dayKey(Date.now()-2*864e5);
+  return (st.last===today||st.last===y||(st.last===y2&&st.fz>0))?st.n:0}
+/* HUD сверху главной */
+function renderHud(){const el=$('#hud');if(!el)return;const L=lvlOf(S.xp||0),p=Math.round(((S.xp||0)-L.from)/(L.to-L.from)*100),sn=streakAlive(),done=S.streak&&S.streak.last===dayKey();
+  el.innerHTML=`<div class="lv"><b>${L.n}</b></div><div class="lvm"><div class="lvt"><span>${esc(L.name)}</span><small>${S.xp||0} / ${L.to} XP</small></div><div class="xpb"><i style="width:${p}%"></i></div></div>
+  <div class="stk ${done?'on':''}" title="Серия"><span class="fl">🔥</span><b>${sn}</b></div>${(S.streak&&S.streak.fz)?`<div class="fz">❄️${S.streak.fz}</div>`:''}`}
+/* Daily Drop */
+function dropAlbum(){if(!S.drop||S.drop.i<0)return null;const x=CATALOG[S.drop.i];return x&&{t:x[0],a:x[1],y:x[2],g:x[3],c:S.drop.i}}
+const DROP_RATE=[[9,'🔥','Огонь'],[7,'👍','Норм'],[5,'😐','Мимо'],[3,'👎','Не моё']];
+function renderDrop(){const el=$('#dropCard');if(!el)return;rollDay();const a=dropAlbum();
+  if(!a){el.style.display='none';return}el.style.display='block';const done=S.drop.r;const left=new Date();left.setHours(24,0,0,0);const h=Math.ceil((left-Date.now())/36e5);
+  const gname=(GENRES.find(x=>x[0]===a.g)||[0,a.g])[1];
+  el.innerHTML=`<div class="drop-h"><span class="display">DAILY DROP</span><span class="dleft">${done?'новый через '+h+' ч':'обновится через '+h+' ч'}</span></div>
+  <div class="drop-b"><div class="drop-c" data-dropopen="1">${covBox(a)}<button class="pb" id="dropPlay" aria-label="Слушать превью">${PLAY_SVG}</button></div>
+    <div class="drop-m"><b>${esc(a.t)}</b><span>${artL(a.a)}${a.y?' · '+a.y:''}</span>${gname?`<em>${esc(gname)}</em>`:''}</div></div>
+  ${done?`<div class="drop-done">${(DROP_RATE.find(x=>x[0]===S.drop.r)||[0,'✓'])[1]} Оценено · серия ${streakAlive()} 🔥</div>`
+   :`<div class="drop-r">${DROP_RATE.map(([v,e,l])=>`<button data-drop="${v}"><span>${e}</span>${l}</button>`).join('')}</div><div class="hint drop-hint">Оцени за 10 секунд: +40 XP и +1 к серии</div>`}`;
+  hydrateCovers(el)}
+async function playDrop(btn){const a=dropAlbum();if(!a)return;
+  if(PLAY.a&&sameA(PLAY.a,a)&&PLAY.i>=0){if(AU.paused)AU.play().catch(()=>{});else AU.pause();return}
+  btn.classList.add('ld');let info=null;try{info=await albumInfo(a)}catch(e){}btn.classList.remove('ld');
+  const i=info&&info.tracks?info.tracks.findIndex(t=>t.p):-1;if(i<0){toast('Превью недоступно — открой альбом');return}
+  try{anthemAU.pause()}catch(e){}PLAY={a,info,i};AU.src=info.tracks[i].p;AU.play().catch(()=>toast('Не удалось включить превью'))}
+function rateDrop(v){const a=dropAlbum();if(!a||S.drop.r)return;const k=albumKey(a),pv=S.rated[k]||{};
+  S.rated[k]={r:v,ts:Date.now(),t:a.t,a:a.a,y:a.y||null,g:a.g||null,c:a.c,st:pv.st||'',rv:pv.rv||'',drop:1};S.drop.r=v;
+  const bumped=bumpStreak();S.g.last.rated=(S.g.last.rated||0)+1; // XP за Drop отдельно, без двойного начисления за оценку
+  addXP(40,'Daily Drop');if(bumped&&[3,7,14,30,50,100].includes(S.streak.n)){setTimeout(()=>{confetti();toast('Серия '+S.streak.n+' дней! 🔥')},800);addXP(S.streak.n*5,'серия')}
+  try{TG.HapticFeedback.impactOccurred('medium')}catch(e){}
+  save();renderDrop();renderHud();renderRateCta()}
+/* задания */
+function renderQuests(){const el=$('#quests');if(!el)return;rollDay();const g=S.g;
+  el.innerHTML=`<div class="q-h"><b>Задания на сегодня</b><span>${g.qd.length}/${g.q.length}${g.all?' · бонус +50 ✓':''}</span></div>`+g.q.map(id=>{const q=QUESTS[id];if(!q)return '';const c=Math.min(q[2](),q[1]),ok=g.qd.includes(id);
+    return `<div class="q ${ok?'ok':''}"><span class="qc">${ok?'✓':''}</span><span class="qt">${esc(q[0])}</span><span class="qp">${q[1]>1?c+'/'+q[1]:''}${ok?'':' +25'}</span></div>`}).join('')}
+/* всплывашка XP и конфетти */
+let xpT=null;function xpPop(s){const el=$('#xpPop');el.textContent=s;el.classList.remove('on');void el.offsetWidth;el.classList.add('on');clearTimeout(xpT);xpT=setTimeout(()=>el.classList.remove('on'),1600)}
+function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.createElement('canvas');c.className='confetti';document.body.appendChild(c);
+  const W=c.width=innerWidth*devicePixelRatio,H=c.height=innerHeight*devicePixelRatio;const x=c.getContext('2d');
+  const ps=Array.from({length:90},()=>({x:W/2,y:H*.35,vx:(Math.random()-.5)*W*.035,vy:-Math.random()*H*.03-H*.008,s:(4+Math.random()*6)*devicePixelRatio,r:Math.random()*6,c:['#fff','#d9d9d9','#9a9a9a','#fff6'][Math.floor(Math.random()*4)]}));
+  const t0=performance.now();const f=now=>{const t=now-t0;x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=H*.0011;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+    if(t<1800)requestAnimationFrame(f);else c.remove()};requestAnimationFrame(f)}
+$('#s-wave').addEventListener('click',e=>{
+  const d=e.target.closest('[data-drop]');if(d){rateDrop(+d.dataset.drop);return}
+  const p=e.target.closest('#dropPlay');if(p){e.stopPropagation();playDrop(p);return}
+  const o=e.target.closest('[data-dropopen]');if(o){const a=dropAlbum();if(a)openAlbum(a);return}
+  if(e.target.closest('#hud')){show('library')}
+},true);
+setTimeout(()=>{AU.addEventListener('play',()=>{const p=$('#dropPlay');if(p&&PLAY.a&&sameA(PLAY.a,dropAlbum()))p.innerHTML=PAUSE_SVG});AU.addEventListener('pause',()=>{const p=$('#dropPlay');if(p)p.innerHTML=PLAY_SVG})},0);
 
 /* ============ ПОЛНЫЙ ЭКРАН (Telegram 8.0+) ============ */
 function applySafe(){if(!TG)return;const sa=TG.safeAreaInset||{},ca=TG.contentSafeAreaInset||{};const r=document.documentElement.style;
